@@ -286,12 +286,19 @@ class Payright_Call
         foreach ($get_rates as $get_rates) {
             if ($get_rates->term == $loan_term) {
                 $per[] = $get_rates->minimumDepositPercentage;
-            }        }
+            }
+        }
 
         if (isset($per)) {
             $percentage = min($per);
             $value      = $percentage / 100 * $sale_amount;
-            return money_format('%.2n', $value);
+
+            // If above PHP 7.4 check, source: https://www.php.net/manual/en/function.money-format.php
+            if (function_exists('money_format')) {
+                return money_format('%.2n', $value);
+            } else {
+                return sprintf('%01.2f', $value);
+            }
         } else {
             return 0;
         }
