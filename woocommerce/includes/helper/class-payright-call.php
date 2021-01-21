@@ -208,19 +208,25 @@ class Payright_Call
         $establishment_fees_array = $_SESSION['establishmentFeesArray'];
 
         if (isset($get_rates) && $sale_amount > 0) {
-            $payright_installment_approval = self::payright_get_maximum_sale_amount($get_rates, $sale_amount);
+
+            // Get your 'minimum deposit amount', from 'rates' data received and sale amount.
+            $get_min_deposit = self::get_calculate_min_deposit($get_rates, $sale_amount);
+
+            // Get 'loan amount', for example: 'sale amount' - 'minimum deposit amount' = loan amount.
+            $loan_amount = $sale_amount - $get_min_deposit;
+
+            $payright_installment_approval = self::payright_get_maximum_sale_amount($get_rates, $loan_amount);
 
             if ($payright_installment_approval == 0) {
                 $account_keeping_fees = $conf->monthlyAccountKeepingFee;
                 $payment_processing_fee = $conf->paymentProcessingFee;
 
-                $loan_term       = self::payright_fetch_loan_term_for_sale($get_rates, $sale_amount);
-                $get_min_deposit = self::get_calculate_min_deposit($get_rates, $sale_amount, $loan_term);
-                $get_frequancy   = self::payright_get_payment_frequancy($account_keeping_fees, $loan_term);
+                $loan_term = self::payright_fetch_loan_term_for_sale($get_rates, $loan_amount);
+                $get_frequancy = self::payright_get_payment_frequancy($account_keeping_fees, $loan_term);
 
                 $calculated_no_of_repayments     = $get_frequancy['numberofRepayments'];
                 $calculated_account_keeping_fees = $get_frequancy['accountKeepingFees'];
-                $loan_amount          = $sale_amount - $get_min_deposit;
+
                 $formated_loan_amount = number_format((float) $loan_amount, 2, '.', '');
 
                 $res_establishment_fees = self::payright_get_establishment_fees($loan_term, $establishment_fees_array);
@@ -281,16 +287,20 @@ class Payright_Call
         }
     }
 
-    public static function get_calculate_min_deposit($get_rates, $sale_amount, $loan_term)
+    public static function get_calculate_min_deposit($get_rates, $sale_amount)
     {
-        foreach ($get_rates as $get_rates) {
-            if ($get_rates->term == $loan_term) {
-                $per[] = $get_rates->minimumDepositPercentage;
+        $loan_term = self::payright_fetch_loan_term_for_sale($get_rates, $sale_amount);
+
+        foreach ($get_rates as $get_rate) {
+            if ($get_rate->term == $loan_term
+                    && ($sale_amount >= $get_rate->minimumPurchase
+                    && $sale_amount <= $get_rate->maximumPurchase)) {
+                $percentage = $get_rate->minimumDepositPercentage;
+                break;
             }
         }
 
-        if (isset($per)) {
-            $percentage = min($per);
+        if (isset($percentage)) {
             $value      = $percentage / 100 * $sale_amount;
 
             // If above PHP 7.4 check, source: https://www.php.net/manual/en/function.money-format.php
