@@ -222,6 +222,12 @@ class Payright_Call
                 $payment_processing_fee = $conf->paymentProcessingFee;
 
                 $loan_term = self::payright_fetch_loan_term_for_sale($get_rates, $loan_amount);
+
+                // If 'loan term' given is deemed 'invalid', we just trigger the 'exceed_amount' error
+                if($loan_term <= 0) {
+                    return false; // error 'exceed_amount' text
+                }
+
                 $get_frequancy = self::payright_get_payment_frequancy($account_keeping_fees, $loan_term);
 
                 $calculated_no_of_repayments     = $get_frequancy['numberofRepayments'];
