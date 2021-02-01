@@ -76,7 +76,6 @@ function payright_shop_installments($price, $product)
     }
 
     $type = $product->get_type();
-    $currency = get_woocommerce_currency();
     $image_url = plugin_dir_url(__FILE__) . 'woocommerce/images/payrightlogo_rgb.png';
 
     $theme_options = get_option('woocommerce_payright_gateway_settings');
@@ -90,14 +89,15 @@ function payright_shop_installments($price, $product)
         $front_page_instalments = $theme_options['frontinstallments'];
         $related_product_instalments = $theme_options['relatedinstallments'];
 
-        if (($enabled == 'yes') && ($product_price >= $minamount) && ($currency == "AUD")) {
+        if (($enabled == 'yes') && ($product_price >= $minamount)) {
+
             $result = Payright_Call::payright_calculate_single_product_installment($product_price);
 
-            if ($result != null || $result != false) {
+            if ($result != null || $result != false ) {
 
                 if ((is_shop() || is_product_category()) && $listinstallments == 'optionOne') {
 
-                    $des = ("<div id='prshop'><p id='payrightshopinstallment'>From $" . $result[1] . " a fortnight with<img id='payrightLogoimg' src='" . $image_url . "'/></p>
+                    $des = ("<div id='prshop'><p id='payrightshopinstallment'> From $" . $result[1] . " a fortnight with<img id='payrightLogoimg' src='" . $image_url . "'/></p>
                             </div>");
 
                 } elseif ($woocommerce_loop['name'] == 'related' && $related_product_instalments == 'optionOne' && is_product()) {
@@ -106,14 +106,13 @@ function payright_shop_installments($price, $product)
                             </div>");
                 } elseif (is_home() && $front_page_instalments == 'optionOne') {
 
-                    $des = ("<div id='prshop'><p id='payrightshopinstallment'>From $" . $result[1] . " a fortnight with<img id='payrightLogoimg' src='" . $image_url . "'/></p>
+                    $des = ("<div id='prshop'><p id='payrightshopinstallment'> From $" . $result[1] . " a fortnight with<img id='payrightLogoimg' src='" . $image_url . "'/></p>
                             </div>");
                 } elseif (is_front_page() && $front_page_instalments == 'optionOne') {
 
-                    $des = ("<div id='prshop'><p id='payrightshopinstallment'>From $" . $result[1] . " a fortnight with<img id='payrightLogoimg' src='" . $image_url . "'/></p>
+                    $des = ("<div id='prshop'><p id='payrightshopinstallment'>From $" . $result[1] . " a fortnight with <img id='payrightLogoimg' src='" . $image_url . "'/></p>
                             </div>");
                 } elseif (is_product() && $product_instalments == 'optionOne' && $woocommerce_loop['name'] != 'related') {
-
                     $des = ("</br> <div class='payrightProductInstalments'>From $" . $result[1] . " a fortnight with<img id='productPayrightLogoImg' src='" . $image_url . "' /><a style='text-decoration: underline;' class='payright_opener654' id='payright_opener654'>Info</a></div>");
                 } else {
 
@@ -122,10 +121,12 @@ function payright_shop_installments($price, $product)
             }
         }
     } elseif ($type == "variation") {
-        if (($enabled == 'yes') && ($product_price >= $minamount) && ($currency == "AUD")) {
+        if (($enabled == 'yes') && ($product_price >= $minamount)) {
             $result = Payright_Call::payright_calculate_single_product_installment($product_price);
-            if (is_product() && $product_instalments == 'optionOne' && $woocommerce_loop['name'] != 'related') {
-                $des = ("</br> <div class='payrightProductInstalments'>From $" . $result[1] . " a fortnight with<img id='payrightLogoimg' src='" . $image_url . "' ></img><a style='text-decoration: underline;' class='payright_opener654V' id='payright_opener654V'>Info</a></div>");
+            if ($result != null || $result != false) {
+                if (is_product() && $product_instalments == 'optionOne' && $woocommerce_loop['name'] != 'related') {
+                    $des = ("</br> <div class='payrightProductInstalments'>From $" . $result[1] . " a fortnight with<img id='payrightLogoimg' src='" . $image_url . "' ></img><a style='text-decoration: underline;' class='payright_opener654V' id='payright_opener654V'>Info</a></div>");
+                }
             }
         }
     } else {
@@ -160,30 +161,33 @@ function payright_filter_gateways($gateway_list)
     $theme_options = get_option('woocommerce_payright_gateway_settings');
     $minamount = (float) $theme_options['minamount'];
     $enabled = $theme_options['enabled'];
-    $currency = get_woocommerce_currency();
-
-    if ($enabled != 'yes' && $currency != 'AUD') {
+ 
+    if ($_SESSION['rates'] == null) {
         unset($gateway_list['payright_gateway']);
-    }
-
-    if (is_checkout()) {
-
-        if (WC()->cart->total === 0) {
-            $orderId = get_query_var('order-pay');
-            $order = wc_get_order($orderId);
-            $cart_total = $order->get_total();
-        } else {
-            $cart_total = WC()->cart->total;
-        }
-    
-        if ($cart_total < $minamount || $currency != 'AUD') {
+    }else {
+        if ($enabled != 'yes') {
             unset($gateway_list['payright_gateway']);
-        } 
-        
-        if (array_key_exists('payright_gateway', $gateway_list)) {
-            $gateway_list['payright_gateway']->title = __('Payright - Buy now pay later', 'woocommerce');
         }
 
+        if (is_checkout()) {
+            if (WC()->cart->total === 0) {
+                $orderId = get_query_var('order-pay');
+                $order = wc_get_order($orderId);
+                $cart_total = $order->get_total();
+            } else {
+                $cart_total = WC()->cart->total;
+            }
+
+            $result = Payright_Call::payright_calculate_single_product_installment($cart_total);
+
+            if ($cart_total < $minamount || ($result == null || $result == false)) {
+                unset($gateway_list['payright_gateway']);
+            }
+        
+            if (array_key_exists('payright_gateway', $gateway_list)) {
+                $gateway_list['payright_gateway']->title = __('Payright - Buy now pay later', 'woocommerce');
+            }
+        }
     }
 
     return $gateway_list;
@@ -310,7 +314,7 @@ function payright_redirect($request)
         $order = wc_get_order($woo_order_number);
 
         if($planStatus === "COMPLETE"){
-            $json = Payright_Call::payright_get_plan_data_by_token($token);
+        $json = Payright_Call::payright_get_plan_data_by_token($token);
             if (isset($json->data->planNumber)) {
                 $planNumber          = $json->data->planNumber;
             }
@@ -326,6 +330,8 @@ function payright_redirect($request)
             exit;
 
         } else {
+
+
             $order->update_status('cancelled', 'wc-gateway-payright');
             $url = $order->get_cancel_order_url_raw();
             if (!isset(WC()->session)) {
@@ -345,6 +351,8 @@ add_action('rest_api_init', function () {
         array(
             'methods' => WP_REST_Server::READABLE,
             'callback' => 'payright_redirect',
+            'permission_callback' => '__return_true',
+
         )
     );
 });
@@ -444,6 +452,7 @@ function wc_payright_gateway_init()
             $this->sandbox = $this->get_option('sandbox');
             $this->instructions = $this->get_option('instructions');
             $this->installments = $this->get_option('installments');
+            $this->region = $this->get_option('region');
             $this->listinstallments = $this->get_option('listinstallments');
             $this->frontinstallments = $this->get_option('frontinstallments');
             $this->relatedinstallments = $this->get_option('relatedinstallments');
@@ -484,6 +493,14 @@ function wc_payright_gateway_init()
                     'value' => 'Payright - Buy now pay later',
                     'default' => __('Payright', 'wc-gateway-payright'),
                     'desc_tip' => true,
+                ),
+                'region' => array(
+                    'title' => __('Region', 'wc-gateway-payright'),
+                    'type' => 'select',
+                    'options' => array(
+                        'optionOne' => __('Australia'),
+                        'optionTwo' => __('New Zealand')),
+                    'default' => 'optionOne',
                 ),
                 'accesstoken'            => array(
                     'title'       => __('Access Token', 'wc-gateway-payright'),
@@ -622,16 +639,17 @@ function wc_payright_gateway_init()
             }
 
             $result = Payright_Call::payright_calculate_single_product_installment($cart_total);
+            
 
-            if (count($result) > 0 && $result[0] != '') {
+            if ($result != null || $result != false ) {
                 $description = '<div class="bodybox">
                 <div class="payRight_container">
                 <article>
                     <div class="payRight_columns">
 
                         <div class="insideColumns payRight_is-5" id="payrightis5">
-                        <h2 class="payRightH2 paymentstitle" id="payrightmargin">$'.$result[2].' today then ' . $result[0] . ' Fortnightly instalments of $' . $result[1].'</h2>
-                        <p class="payRightPayment" id="payrightdeposit" >Excluding deposit</p>
+                            <h2 class="payRightH2 paymentstitle" id="payrightmargin">$'.$result[2].' today then ' . $result[0] . ' Fortnightly instalments of $' . $result[1].'</h2>
+                            <p class="payRightPayment" id="payrightdeposit" >Excluding deposit</p>
                         </div>
 
                     </div>

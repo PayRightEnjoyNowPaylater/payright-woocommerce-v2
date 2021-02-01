@@ -39,11 +39,9 @@ class Payright_Call
             } else {
                 return false;
             }
-
         } catch (\Exception $e) {
             return "Error";
         }
-
     }
     public static function callPayrightApi($url, $data)
     {
@@ -55,7 +53,7 @@ class Payright_Call
             'timeout'     => '15',
             'httpversion' => '1.0',
             'blocking'    => true,
-            'headers'     =>  array('Content-Type'=>  'application/json', 'Accept' => 'application/json', 'Authorization' => 'Bearer ' . $accesstoken),
+            'headers'     =>  array('Content-Type' =>  'application/json', 'Accept' => 'application/json', 'Authorization' => 'Bearer ' . $accesstoken),
             'cookies'     => array(),
         );
 
@@ -75,13 +73,13 @@ class Payright_Call
 
         $theme_options = get_option('woocommerce_payright_gateway_settings');
         $accesstoken  = $theme_options['accesstoken'];
-    
+
         $args = array(
             'body'        => $data,
             'timeout'     => '15',
             'httpversion' => '1.0',
             'blocking'    => true,
-            'headers'     =>  array('Content-Type'=>  'application/json', 'Accept' => 'application/json', 'Authorization' => 'Bearer ' . $accesstoken),
+            'headers'     =>  array('Content-Type' =>  'application/json', 'Accept' => 'application/json', 'Authorization' => 'Bearer ' . $accesstoken),
             'cookies'     => array(),
         );
 
@@ -96,7 +94,7 @@ class Payright_Call
         }
     }
 
-    public static function payright_initialize_transaction($cart_total,$orderId)
+    public static function payright_initialize_transaction($cart_total, $orderId)
     {
         $rand                                = substr(md5(time()), 0, 5);
         $ref                                 = 'WooPr_' . $rand;
@@ -106,170 +104,147 @@ class Payright_Call
             "merchantReference" => $ref,
             "saleAmount" => $cart_total,
             "type"     => "standard",
-            "redirectUrl"   => get_rest_url().'api/v1/payrightresponse/?id='.$orderId,
+            "redirectUrl"   => get_rest_url() . 'api/v1/payrightresponse/?id=' . $orderId,
+            "expiresAt"         => "2021-12-31T21:53:14.000000Z",
+
+
         );
         $url = $api_end_point . $api_url;
 
         try {
-            $pr_json_decode      = self::callPayrightApi($url,json_encode($data));
+            $pr_json_decode      = self::callPayrightApi($url, json_encode($data));
             $redirectUrl = $pr_json_decode->data->redirectEndpoint;
 
             return $redirectUrl;
-
         } catch (\Exception $e) {
             return "Error";
         }
-
     }
 
     public static function payright_activate_plan($checkoutId)
     {
         $api_end_point = constant("PAYRIGHT_APIENDPOINT");
         $data = array();
-        $api_url="api/v1/checkouts/";
-        $url = $api_end_point.$api_url.$checkoutId."/activate";
+        $api_url = "api/v1/checkouts/";
+        $url = $api_end_point . $api_url . $checkoutId . "/activate";
         $theme_options = get_option('woocommerce_payright_gateway_settings');
         $accesstoken  = $theme_options['accesstoken'];
 
         try {
-        $args = array(
-            'body'        => $data,
-            'timeout'     => '15',
-            'httpversion' => '1.0',
-            'blocking'    => true,
-            'headers'     =>  array('Content-Type'=>  'application/json', 'Accept' => 'application/json', 'Authorization' => 'Bearer ' . $accesstoken),
-            'cookies'     => array(),
-            'method'       => 'PUT',
-        );
+            $args = array(
+                'body'        => $data,
+                'timeout'     => '15',
+                'httpversion' => '1.0',
+                'blocking'    => true,
+                'headers'     =>  array('Content-Type' =>  'application/json', 'Accept' => 'application/json', 'Authorization' => 'Bearer ' . $accesstoken),
+                'cookies'     => array(),
+                'method'       => 'PUT',
+            );
 
-        $payright_response  = wp_remote_request($url, $args);
-        $payright_body      = wp_remote_retrieve_body($payright_response);
-        $payright_http_code = wp_remote_retrieve_response_code($payright_response);
+            $payright_response  = wp_remote_request($url, $args);
+            $payright_body      = wp_remote_retrieve_body($payright_response);
+            $payright_http_code = wp_remote_retrieve_response_code($payright_response);
 
             if ($payright_http_code != 200) {
                 return "error";
             } else {
                 return json_decode($payright_body);
             }
-
         } catch (\Exception $e) {
             echo "Error";
         }
-
     }
 
-//used to get plan status
+    //used to get plan status
     public static function payright_get_plan_data_by_token($token)
     {
         $api_end_point          = constant("PAYRIGHT_APIENDPOINT");
-        $api                    = "api/v1/checkouts/".$token;
-        $url = $api_end_point.$api;
+        $api                    = "api/v1/checkouts/" . $token;
+        $url = $api_end_point . $api;
         $data = array();
 
         try {
             $pr_json_decode = self::payrightApiGet($url, $data);
 
             return $pr_json_decode;
-
         } catch (\Exception $e) {
             return "Error";
         }
-
     }
 
-// gets rates
+    // gets rates
     public static function payright_get_session_value()
     {
         $theme_options    = get_option('woocommerce_payright_gateway_settings');
         $enabled          = $theme_options['enabled'];
+
         if ($enabled == "yes" && !isset($_SESSION['rates'])) {
+
             try {
-
                 $get_api_configuration    = self::get_rates();
-                $rates                   = $get_api_configuration->data->rates;
-                $conf                     = $get_api_configuration->data->otherFees;
-                $establishment_fees_array = $get_api_configuration->data->establishmentFees;
+                if (isset($get_api_configuration->data)) {
+                    $rates                   = $get_api_configuration->data->rates;
+                    $conf                     = $get_api_configuration->data->otherFees;
+                    $establishment_fees_array = $get_api_configuration->data->establishmentFees;
 
-                $_SESSION['rates']                  = $rates;
-                $_SESSION['establishmentFeesArray'] = $establishment_fees_array;
-                $_SESSION['other']                   = $conf;
-
+                    $_SESSION['rates']                  = $rates;
+                    $_SESSION['establishmentFeesArray'] = $establishment_fees_array;
+                    $_SESSION['other']                   = $conf;
+                } else {
+                    return false;
+                }
             } catch (\Exception $e) {
                 return "Error";
             }
-        } else { }
+        } else {
+        }
     }
 
-    //calculates instalments
     public static function payright_calculate_single_product_installment($sale_amount)
     {
-        $get_rates                = $_SESSION['rates'];
-        $conf                     = $_SESSION['other'];
-        $establishment_fees_array = $_SESSION['establishmentFeesArray'];
 
-        if (isset($get_rates) && $sale_amount > 0) {
+        if (isset($_SESSION['rates']) && $sale_amount > 0) {
+
+            $get_rates                = $_SESSION['rates'];
+            $conf                     = $_SESSION['other'];
+            $establishment_fees_array = $_SESSION['establishmentFeesArray'];
+
 
             // Get your 'minimum deposit amount', from 'rates' data received and sale amount.
-            $get_min_deposit = self::get_calculate_min_deposit($get_rates, $sale_amount);
+            $minimumDepositAndTerm = self::get_minimum_deposit_and_term($get_rates, $sale_amount);
 
-            // Get 'loan amount', for example: 'sale amount' - 'minimum deposit amount' = loan amount.
-            $loan_amount = $sale_amount - $get_min_deposit;
-
-            $payright_installment_approval = self::payright_get_maximum_sale_amount($get_rates, $loan_amount);
-
-            if ($payright_installment_approval == 0) {
-                $account_keeping_fees = $conf->monthlyAccountKeepingFee;
-                $payment_processing_fee = $conf->paymentProcessingFee;
-
-                $loan_term = self::payright_fetch_loan_term_for_sale($get_rates, $loan_amount);
-
-                // If 'loan term' given is deemed 'invalid', we just trigger the 'exceed_amount' error
-                if($loan_term <= 0) {
-                    return false; // error 'exceed_amount' text
-                }
-
-                $get_frequancy = self::payright_get_payment_frequancy($account_keeping_fees, $loan_term);
-
-                $calculated_no_of_repayments     = $get_frequancy['numberofRepayments'];
-                $calculated_account_keeping_fees = $get_frequancy['accountKeepingFees'];
-
-                $formated_loan_amount = number_format((float) $loan_amount, 2, '.', '');
-
-                $res_establishment_fees = self::payright_get_establishment_fees($loan_term, $establishment_fees_array);
-
-                $CalculateRepayments = self::payright_calculate_repayment(
-                    $calculated_no_of_repayments,
-                    $calculated_account_keeping_fees,
-                    $res_establishment_fees,
-                    $formated_loan_amount,
-                    $payment_processing_fee
-                );
-
-                $payrightResult = array($calculated_no_of_repayments, $CalculateRepayments,$get_min_deposit);
-                return $payrightResult;
-
-            } else {
+            if (empty($minimumDepositAndTerm)) {
                 return false;
             }
+
+            $account_keeping_fees = $conf->monthlyAccountKeepingFee;
+            $payment_processing_fee = $conf->paymentProcessingFee;
+
+            $get_min_deposit = $minimumDepositAndTerm['minimumDepositAmount'];
+            $loan_term = $minimumDepositAndTerm['minimumDepositTerm'];
+            $loan_amount = $sale_amount - $get_min_deposit;
+            $get_frequancy   = self::payright_get_payment_frequancy($account_keeping_fees, $loan_term);
+
+            $calculated_no_of_repayments     = $get_frequancy['numberofRepayments'];
+            $calculated_account_keeping_fees = $get_frequancy['accountKeepingFees'];
+            $formated_loan_amount = number_format((float) $loan_amount, 2, '.', '');
+
+            $res_establishment_fees = self::payright_get_establishment_fees($loan_term, $establishment_fees_array);
+
+            $CalculateRepayments = self::payright_calculate_repayment(
+                $calculated_no_of_repayments,
+                $calculated_account_keeping_fees,
+                $res_establishment_fees,
+                $formated_loan_amount,
+                $payment_processing_fee
+            );
+
+            $payrightResult = array($calculated_no_of_repayments, $CalculateRepayments, $get_min_deposit);
+            return $payrightResult;
+
         } else {
             return false;
         }
-
-    }
-
-    public static function payright_get_maximum_sale_amount($get_rates, $sale_amount)
-    {
-        $chk_loan_limit = 0;
-      
-        foreach ($get_rates as $k) {
-            $get_val[]= $k->maximumPurchase;
-        }
-
-        if (max($get_val) < $sale_amount) {
-            $chk_loan_limit = 1;
-        }
-
-        return $chk_loan_limit;
     }
 
     public static function payright_fetch_loan_term_for_sale($rates, $sale_amount)
@@ -293,32 +268,26 @@ class Payright_Call
         }
     }
 
-    public static function get_calculate_min_deposit($get_rates, $sale_amount)
+    public static function get_minimum_deposit_and_term($rates, $saleAmount)
     {
-        $loan_term = self::payright_fetch_loan_term_for_sale($get_rates, $sale_amount);
+        // Iterate through each term, apply the minimum deposit to the sale amount and see if it fits in the rate card. If not found, move to a higher term
+        foreach ($rates as $rate) {
+            $minimumDepositPercentage = $rate->minimumDepositPercentage;
+            $depositAmount = $saleAmount * ($minimumDepositPercentage / 100);
+            $loanAmount = $saleAmount - $depositAmount;
 
-        foreach ($get_rates as $get_rate) {
-            if ($get_rate->term == $loan_term
-                    && ($sale_amount >= $get_rate->minimumPurchase
-                    && $sale_amount <= $get_rate->maximumPurchase)) {
-                $percentage = $get_rate->minimumDepositPercentage;
-                break;
+            // Check if loan amount is within range
+            if ($loanAmount >= $rate->minimumPurchase && $loanAmount <= $rate->maximumPurchase) {
+                return [
+                    'minimumDepositPercentage' => $minimumDepositPercentage,
+                    // If above PHP 7.4 check, source: https://www.php.net/manual/en/function.money-format.php
+                    'minimumDepositAmount' => function_exists('money_format') ? money_format('%.2n', $depositAmount) : sprintf('%01.2f', $depositAmount),
+                    'minimumDepositTerm' => $rate->term,
+                ];
             }
         }
-
-        if (isset($percentage)) {
-            $value      = $percentage / 100 * $sale_amount;
-
-            // If above PHP 7.4 check, source: https://www.php.net/manual/en/function.money-format.php
-            if (function_exists('money_format')) {
-                return money_format('%.2n', $value);
-            } else {
-                return sprintf('%01.2f', $value);
-            }
-        } else {
-            return 0;
-        }
-
+        // No valid term and deposit found
+        return [];
     }
 
     public static function payright_get_payment_frequancy($account_keeping_fees, $loan_term)
@@ -357,7 +326,7 @@ class Payright_Call
         $establishment_fees  = $establishment_fees_array;
         $fee_band_array      = array();
         $fee_band_calculator = 0;
-
+        $h = 0;
         foreach ($establishment_fees as $key => $row) {
             $fee_band_array[$key]['term']            = $row->term;
             $fee_band_array[$key]['initial_est_fee'] = $row->initialEstFee;
@@ -380,5 +349,4 @@ class Payright_Call
         $repayment_amount = floatval($repayment_amount_init) + floatval($account_keeping_fees) + floatval($payment_processing_fee);
         return bcdiv($repayment_amount, 1, 2);
     }
-
 }
