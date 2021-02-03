@@ -105,8 +105,6 @@ class Payright_Call
             "saleAmount" => $cart_total,
             "type"     => "standard",
             "redirectUrl"   => get_rest_url() . 'api/v1/payrightresponse/?id=' . $orderId,
-            "expiresAt"         => "2021-12-31T21:53:14.000000Z",
-
 
         );
         $url = $api_end_point . $api_url;
@@ -196,8 +194,7 @@ class Payright_Call
             } catch (\Exception $e) {
                 return "Error";
             }
-        } else {
-        }
+        } 
     }
 
     public static function payright_calculate_single_product_installment($sale_amount)
