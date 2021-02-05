@@ -1,51 +1,50 @@
-# Payright-Woocommerce
+## payright-woocommerce
 
-Payright Plugin for Wordpress
+PayRight payment method plugin for WooCommerce, follow the steps below for 
+configuration setup and installation.
 
-# 1.1 Payright Plugin Installation
+### 1.1 Installation
 This section outlines the steps to install the Payright plugin for the first time.
 
-#### Prerequisite needed to obtain from Payright;
-+ Payright Merchant Username
-+ Merchant Password
-+ Client Username
-+ Client Password 
-+ API Key
+#### Requirements
++ Access Token - A 'sandbox access token', or 'production access token'.
 
-#### Install via Wordpress Dashborard
+#### How to install
 
-1. Download the payright-wordpress plugin - Available as a .zip or tar.gz file from the Payright GitHub directory.
-2. Navigate to the "Add New" in the plugins dashboard
-2. Navigate to the "Upload" area
-3. Select the payright zip file from your computer
-4. Click "Install Now"
-5. Activate the plugin in the Plugin dashboard
+1. Download the 'payright-woocommerce' plugin.
+2. Navigate to the "Add New" in the plugins dashboard.
+2. Navigate to the "Upload" area.
+3. Select the 'payright-woocommerce' .zip file from your computer.
+4. Click "Install Now".
+5. Activate the plugin in the 'Plugin' dashboard.
 
-# 1.2	Website Configuration
-Payright operates under an assumptions based on Wordpress configurations. To align with these assumptions, the Wordpress configurations must reflect the below.
+### 1.2	WooCommerce Configuration
+Payright operates under assumptions based on Wordpress configurations. To align with these assumptions, the Wordpress configurations must reflect the below.
 
-1. Store country set to Australia
-2. Website Currency must be set to AUD
-3. Woocommerce installed
- 
+1. Store 'Country' set to 'Australia'.
+2. Website 'Currency' must be set to 'AUD'.
+3. WooCommerce installed.
 
-# 1.3	Payright Merchant Setup
-Complete the below steps to configure the merchant’s Payright Merchant Credentials in Wordpress Admin.
+### 1.3	Payright Plugin 
 
-1. Go to plugins page and click configure.
-2. Enter the Username, Password and API key.
-3. Enter the Merchant Username and Merchant Password.
-4. Enable Payright plugin using the Enabled checkbox.
-5. Configure the Payright API Mode (Sandbox Mode for testing on a staging instance and Production Mode for a live website and legitimate transactions).
-6. Save the configuration.
+#### Primary Configuration
+Complete the below steps to configure your Payright plugin:
 
-# 1.4	Payright Display Configuration
+1. Go to plugins page and click 'Configure'.
+2. Enter the 'Access Token'.
+3. Check 'Enable Payright' checkbox.
+4. Set the Payright plugin mode, toggling the 'Enable Sandbox Mode' checkbox:
+    + Check 'Enable Sandbox Mode' for testing on a staging instance.
+    + Uncheck 'Enable Sandbox Mode' for a live store and legitimate transactions.
+5. Click 'Save Changes'.
 
-1. Navigate to Woocommerce > Settings > Payments
-2. Enable Payright and Click on Manage button under Payment for Payright
-3. Configure the display of the Payright installments details on;
-+ Product Pages (individual product display pages)  - Recommended
-+ Category  Pages (the listing of products, which would also include Search Pages) - Recommended
-+ Related Products - Optional
-+ Front Page  - Optional
-3. Enter a Minimum amount to display the installments.
+#### Secondary Configurations
+
+1. Navigate to WooCommerce > Settings > Payments.
+2. 'Enable Payright' and click on the 'Manage' button under 'Payment' for Payright.
+3. Configure the display of the Payright installments details on:
+    + Product Pages (Recommended)
+    + Catalogue Pages (Recommended)
+    + Related Products (Optional)
+    + Front Page (Optional)
+3. Enter a 'Minimum Amount' to display the installments.
