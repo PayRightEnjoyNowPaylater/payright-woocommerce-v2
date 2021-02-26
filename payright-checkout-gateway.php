@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Plugin Name: Payright
  * Description: A Payment gateway for Payright checkout
@@ -93,13 +94,12 @@ function payright_shop_installments($price, $product)
 
             $result = Payright_Call::payright_calculate_single_product_installment($product_price);
 
-            if ($result != null || $result != false ) {
+            if ($result != null || $result != false) {
 
                 if ((is_shop() || is_product_category()) && $listinstallments == 'optionOne') {
 
                     $des = ("<div id='prshop'><p id='payrightshopinstallment'> From $" . $result[1] . " a fortnight with<img id='payrightLogoimg' src='" . $image_url . "'/></p>
                             </div>");
-
                 } elseif ($woocommerce_loop['name'] == 'related' && $related_product_instalments == 'optionOne' && is_product()) {
 
                     $des = ("<div id='prshop'><p id='payrightshopinstallment'>From $" . $result[1] . " a fortnight with<img id='payrightLogoimg' src='" . $image_url . "'/></p>
@@ -161,21 +161,23 @@ function payright_filter_gateways($gateway_list)
     $theme_options = get_option('woocommerce_payright_gateway_settings');
     $minamount = (float) $theme_options['minamount'];
     $enabled = $theme_options['enabled'];
- 
+
     if ($_SESSION['rates'] == null) {
         unset($gateway_list['payright_gateway']);
-    }else {
+    } else {
         if ($enabled != 'yes') {
             unset($gateway_list['payright_gateway']);
         }
 
         if (is_checkout()) {
-            if (WC()->cart->total === 0) {
+            $cart_total = WC()->cart->total;
+
+            if ($cart_total === 0) {
                 $orderId = get_query_var('order-pay');
                 $order = wc_get_order($orderId);
-                $cart_total = $order->get_total();
-            } else {
-                $cart_total = WC()->cart->total;
+                if ($order) {
+                    $cart_total = $order->get_total();
+                }
             }
 
             $result = Payright_Call::payright_calculate_single_product_installment($cart_total);
@@ -183,7 +185,7 @@ function payright_filter_gateways($gateway_list)
             if ($cart_total < $minamount || ($result == null || $result == false)) {
                 unset($gateway_list['payright_gateway']);
             }
-        
+
             if (array_key_exists('payright_gateway', $gateway_list)) {
                 $gateway_list['payright_gateway']->title = __('Payright - Buy now pay later', 'woocommerce');
             }
@@ -303,18 +305,18 @@ function payright_wc_locate_template($template, $template_name, $template_path)
 function payright_redirect($request)
 {
     $url = "";
-    global $order;  
+    global $order;
 
     if (!empty($_GET['status'])) {
         $planStatus = ($_GET['status']);
-        $id = str_replace ('/', "", $_GET['id']);
+        $id = str_replace('/', "", $_GET['id']);
         $id = preg_split('/\?+(?:checkoutId=)/', $id);
         $token = $id[1];
         $woo_order_number = $id[0];
         $order = wc_get_order($woo_order_number);
 
-        if($planStatus === "COMPLETE"){
-        $json = Payright_Call::payright_get_plan_data_by_token($token);
+        if ($planStatus === "COMPLETE") {
+            $json = Payright_Call::payright_get_plan_data_by_token($token);
             if (isset($json->data->planNumber)) {
                 $planNumber          = $json->data->planNumber;
             }
@@ -328,7 +330,6 @@ function payright_redirect($request)
             }
             wp_redirect($url);
             exit;
-
         } else {
 
 
@@ -371,12 +372,12 @@ function pr_order_status_shipped_callback($order_id)
         // Check if the custom field has a value.
         if (!empty($planid)) {
             $prResult = Payright_Call::payright_activate_plan($planid);
-            if($prResult != 'error'){
+            if ($prResult != 'error') {
                 // The text for the note
                 $note = __("Payright plan has been activated");
-    
+
                 // Add the note
-                $order->add_order_note( $note );
+                $order->add_order_note($note);
             }
         }
     }
@@ -388,14 +389,14 @@ add_action('woocommerce_order_status_completed', 'pr_order_status_shipped_callba
 add_action('woocommerce_admin_order_data_after_order_details', 'payright_order_details_plan_id');
 function payright_order_details_plan_id($order)
 {
-    ?>
+?>
     <?php
 
     $id = $order->get_id();
     $is_payright = get_post_meta($id, '_payment_method', true);
     $plan_name = get_post_meta($id, '_payright_plan_name', true);
 
-    if (($is_payright == 'payright_gateway') && (!empty($plan_name))):
+    if (($is_payright == 'payright_gateway') && (!empty($plan_name))) :
     ?>
         <br class="clear" />
         <h4>Plan Details</h4>
@@ -406,8 +407,8 @@ function payright_order_details_plan_id($order)
 
         </div>
 
-            <?php
-endif;
+<?php
+    endif;
 }
 
 /**
@@ -460,7 +461,6 @@ function wc_payright_gateway_init()
             $this->customCss = $this->get_option('customCss');
             // Actions
             add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
-
         }
 
         /**
@@ -499,7 +499,8 @@ function wc_payright_gateway_init()
                     'type' => 'select',
                     'options' => array(
                         'optionOne' => __('Australia'),
-                        'optionTwo' => __('New Zealand')),
+                        'optionTwo' => __('New Zealand')
+                    ),
                     'default' => 'optionOne',
                 ),
                 'accesstoken'            => array(
@@ -522,7 +523,8 @@ function wc_payright_gateway_init()
                     'type' => 'select',
                     'options' => array(
                         'optionOne' => __('Yes'),
-                        'optionTwo' => __('No')),
+                        'optionTwo' => __('No')
+                    ),
                     'default' => 'optionOne',
                 ),
                 'listinstallments' => array(
@@ -530,7 +532,8 @@ function wc_payright_gateway_init()
                     'type' => 'select',
                     'options' => array(
                         'optionOne' => __('Yes'),
-                        'optionTwo' => __('No')),
+                        'optionTwo' => __('No')
+                    ),
                     'default' => 'optionOne',
                 ),
                 'frontinstallments' => array(
@@ -538,7 +541,8 @@ function wc_payright_gateway_init()
                     'type' => 'select',
                     'options' => array(
                         'optionOne' => __('Yes'),
-                        'optionTwo' => __('No')),
+                        'optionTwo' => __('No')
+                    ),
                     'default' => 'optionOne',
                 ),
                 'relatedinstallments' => array(
@@ -546,7 +550,8 @@ function wc_payright_gateway_init()
                     'type' => 'select',
                     'options' => array(
                         'optionOne' => __('Yes'),
-                        'optionTwo' => __('No')),
+                        'optionTwo' => __('No')
+                    ),
                     'default' => 'optionOne',
                 ),
                 'moduleOverride' => array(
@@ -579,25 +584,25 @@ function wc_payright_gateway_init()
         public function get_request_url($order)
         {
             $this->endpoint = constant("PAYRIGHT_ENDPOINT");
-            if (WC()->cart->total === 0) {
-                $cart_total = $order->get_total();
-            } else {
-                $cart_total = WC()->cart->total;
+            $cart_total = WC()->cart->total;
+
+            if ($cart_total === 0) {
+                if ($order) {
+                    $cart_total = $order->get_total();
+                }
             }
 
             $payright_api_call = new Payright_Call();
-            $this->payrightPayment = $payright_api_call->payright_initialize_transaction( $cart_total,$order->get_id());
+            $this->payrightPayment = $payright_api_call->payright_initialize_transaction($cart_total, $order->get_id());
 
             if ($this->payrightPayment == 'error') {
                 return array(
                     'result'   => 'failure',
                     'messages' => 'Payright error',
                 );
-
             } else {
                 return $this->payrightPayment;
             }
-
         }
 
         /**
@@ -630,25 +635,27 @@ function wc_payright_gateway_init()
         }
         public function get_description()
         {
-            if (WC()->cart->total === 0) {
+            $cart_total = WC()->cart->total;
+
+            if ($cart_total === 0) {
                 $orderId = get_query_var('order-pay');
                 $order = wc_get_order($orderId);
-                $cart_total = $order->get_total();
-            } else {
-                $cart_total = WC()->cart->total;
+                if ($order) {
+                    $cart_total = $order->get_total();
+                }
             }
 
             $result = Payright_Call::payright_calculate_single_product_installment($cart_total);
-            
 
-            if ($result != null || $result != false ) {
+
+            if ($result != null || $result != false) {
                 $description = '<div class="bodybox">
                 <div class="payRight_container">
                 <article>
                     <div class="payRight_columns">
 
                         <div class="insideColumns payRight_is-5" id="payrightis5">
-                            <h2 class="payRightH2 paymentstitle" id="payrightmargin">$'.$result[2].' today then ' . $result[0] . ' Fortnightly instalments of $' . $result[1].'</h2>
+                            <h2 class="payRightH2 paymentstitle" id="payrightmargin">$' . $result[2] . ' today then ' . $result[0] . ' Fortnightly instalments of $' . $result[1] . '</h2>
                             <p class="payRightPayment" id="payrightdeposit" >Excluding deposit</p>
                         </div>
 
