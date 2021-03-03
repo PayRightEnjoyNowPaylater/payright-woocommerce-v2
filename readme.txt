@@ -14,7 +14,7 @@ Give your customers the option to pay in convenient zero-interest instalments. P
 
 This section outlines the steps to install the Payright plugin. In order to deploy Payright on Wordpress;
 
-1. Go to https://github.com/PayRightEnjoyNowPaylater/payright located on our code repository GITHUB.
+1. Go to https://github.com/PayRightEnjoyNowPaylater/payright-woocommerce located on our code repository GITHUB.
 2. Download the Payright plugin - Available as a .zip or tar.gz file from the Payright GitHub directory.
 3. Login to your WordPress admin.
 4. Go to Plugin > Add New > Upload Plugins in the plugins dashboard
@@ -23,10 +23,10 @@ This section outlines the steps to install the Payright plugin. In order to depl
 7. Activate and configure the plugin in the Plugin dashboard
 
 
-To get integeration and merchant credentials, merhchants should register via http://api.payright.com.au/
+To get integration and merchant credentials, merchants should register via http://api.payright.com.au/
 Once an account is created, create your API keys on the dashboard by provising for website's details.
 
-That's it if you don't get any errors, you should have the Payright module installed on your webshop.
+That's it if you don't get any errors, you should have the Payright module installed on your store.
 
 == Frequently Asked Questions ==
 
