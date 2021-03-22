@@ -6,7 +6,7 @@
  * Author: Payright
  * Author URI: https://www.payright.com.au/
  * Text Domain: wc-gateway-payright
- * Version: 1.0.0
+ * Version: 2.0.3
  *
  * Copyright: (c) 2019 Payright
  *
@@ -67,6 +67,13 @@ function payright_start_session()
 //adds instalments to shop,product, home and checkout pages
 function payright_shop_installments($price, $product)
 {
+    $theme_options = get_option('woocommerce_payright_gateway_settings');
+    $enabled = $theme_options['enabled'];
+
+    if ($enabled != 'yes' && !is_admin()) {
+        return $price;
+    }
+
     $des = '';
     global $woocommerce_loop;
 
@@ -78,60 +85,44 @@ function payright_shop_installments($price, $product)
 
     $type = $product->get_type();
     $image_url = plugin_dir_url(__FILE__) . 'woocommerce/images/payrightlogo_rgb.png';
-
-    $theme_options = get_option('woocommerce_payright_gateway_settings');
-    $enabled = $theme_options['enabled'];
     $minamount = (float) $theme_options['minamount'];
     $product_instalments = $theme_options['installments'];
+    $listinstallments = $theme_options['listinstallments'];
+    $front_page_instalments = $theme_options['frontinstallments'];
+    $related_product_instalments = $theme_options['relatedinstallments'];
 
-    if (($type == "simple" || $type == "variable") && !is_admin()) {
+    if ($product_price >= $minamount) {
 
-        $listinstallments = $theme_options['listinstallments'];
-        $front_page_instalments = $theme_options['frontinstallments'];
-        $related_product_instalments = $theme_options['relatedinstallments'];
+        $result = Payright_Call::payright_calculate_single_product_installment($product_price);
 
-        if (($enabled == 'yes') && ($product_price >= $minamount)) {
+        if ($result != null || $result != false) {
 
-            $result = Payright_Call::payright_calculate_single_product_installment($product_price);
-
-            if ($result != null || $result != false) {
+            if ($type == "simple" || $type == "variable") {
 
                 if ((is_shop() || is_product_category()) && $listinstallments == 'optionOne') {
+                    // List page
+                    $des = ("<div class='prshop'><p class='payrightshopinstallment'>From $" . $result[1] . " a fortnight with<img class='payrightLogoimg' src='" . $image_url . "'/></p></div>");
+                } elseif ((is_home() || is_front_page()) && $front_page_instalments == 'optionOne') {
+                    // Front page
+                    $des = ("<div class='prshop'><p class='payrightshopinstallment'>From $" . $result[1] . " a fortnight with<img class='payrightLogoimg' src='" . $image_url . "'/></p></div>");
+                } elseif (is_product() && $woocommerce_loop['name'] != 'related' && $woocommerce_loop['name'] != 'up-sells' && $product_instalments == 'optionOne') {
+                    // Product page - product price
+                    $des = ("</br> <div class='payrightProductInstalments'>From $" . $result[1] . " a fortnight with<img class='productPayrightLogoImg' src='" . $image_url . "' /><a style='text-decoration: underline;' class='payright_opener654' id='payright_opener654'>Info</a></div>");
+                } elseif (is_product() && ($woocommerce_loop['name'] == 'related' || $woocommerce_loop['name'] == 'up-sells') && $related_product_instalments == 'optionOne') {
+                    // Related products (upsells)
+                    $des = ("<div class='prshop'><p class='payrightshopinstallment'>From $" . $result[1] . " a fortnight with<img class='payrightLogoimg' src='" . $image_url . "'/></p></div>");
+                }
+            } elseif ($type == "variation") {
 
-                    $des = ("<div id='prshop'><p id='payrightshopinstallment'> From $" . $result[1] . " a fortnight with<img id='payrightLogoimg' src='" . $image_url . "'/></p>
-                            </div>");
-                } elseif ($woocommerce_loop['name'] == 'related' && $related_product_instalments == 'optionOne' && is_product()) {
-
-                    $des = ("<div id='prshop'><p id='payrightshopinstallment'>From $" . $result[1] . " a fortnight with<img id='payrightLogoimg' src='" . $image_url . "'/></p>
-                            </div>");
-                } elseif (is_home() && $front_page_instalments == 'optionOne') {
-
-                    $des = ("<div id='prshop'><p id='payrightshopinstallment'> From $" . $result[1] . " a fortnight with<img id='payrightLogoimg' src='" . $image_url . "'/></p>
-                            </div>");
-                } elseif (is_front_page() && $front_page_instalments == 'optionOne') {
-
-                    $des = ("<div id='prshop'><p id='payrightshopinstallment'>From $" . $result[1] . " a fortnight with <img id='payrightLogoimg' src='" . $image_url . "'/></p>
-                            </div>");
-                } elseif (is_product() && $product_instalments == 'optionOne' && $woocommerce_loop['name'] != 'related') {
-                    $des = ("</br> <div class='payrightProductInstalments'>From $" . $result[1] . " a fortnight with<img id='productPayrightLogoImg' src='" . $image_url . "' /><a style='text-decoration: underline;' class='payright_opener654' id='payright_opener654'>Info</a></div>");
-                } else {
-
-                    $des = " ";
+                if (is_product() && $woocommerce_loop['name'] != 'related' && $woocommerce_loop['name'] != 'up-sells' && $product_instalments == 'optionOne') {
+                    // Varient product page - product price
+                    $des = ("</br> <div class='payrightProductInstalments'>From $" . $result[1] . " a fortnight with<img class='productPayrightLogoImg' src='" . $image_url . "' ><a style='text-decoration: underline;' class='payright_opener654V' id='payright_opener654V'>Info</a></div>");
+                } elseif (is_product() && ($woocommerce_loop['name'] == 'related' || $woocommerce_loop['name'] == 'up-sells') && $related_product_instalments == 'optionOne') {
+                    // Related products (upsells)
+                    $des = ("<div class='prshop'><p class='payrightshopinstallment'>From $" . $result[1] . " a fortnight with<img class='payrightLogoimg' src='" . $image_url . "'/></p></div>");
                 }
             }
         }
-    } elseif ($type == "variation") {
-        if (($enabled == 'yes') && ($product_price >= $minamount)) {
-            $result = Payright_Call::payright_calculate_single_product_installment($product_price);
-            if ($result != null || $result != false) {
-                if (is_product() && $product_instalments == 'optionOne' && $woocommerce_loop['name'] != 'related') {
-                    $des = ("</br> <div class='payrightProductInstalments'>From $" . $result[1] . " a fortnight with<img id='payrightLogoimg' src='" . $image_url . "' ></img><a style='text-decoration: underline;' class='payright_opener654V' id='payright_opener654V'>Info</a></div>");
-                }
-            }
-        }
-    } else {
-
-        $des = " ";
     }
 
     return $price . $des;
