@@ -6,7 +6,7 @@
  * Author: Payright
  * Author URI: https://www.payright.com.au/
  * Text Domain: wc-gateway-payright
- * Version: 2.0.4
+ * Version: 2.0.5
  *
  * Copyright: (c) 2019 Payright
  *
@@ -73,7 +73,7 @@ function payright_shop_installments($price, $product)
     $theme_options = get_option('woocommerce_payright_gateway_settings');
     $enabled = $theme_options['enabled'];
 
-    if ($enabled != 'yes' && !is_admin()) {
+    if ($enabled != 'yes' || is_admin()) {
         return $price;
     }
 
