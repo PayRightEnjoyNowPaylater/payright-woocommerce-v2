@@ -240,9 +240,9 @@ add_action('wp_enqueue_scripts', 'payright_scripts', 5);
 function payright_styles()
 {
     // Register the style like this for a plugin:
-    wp_enqueue_style('payright_style_modal', plugins_url('woocommerce/assets/css/payright_style_modal.css', __FILE__), array(), '1.0.0', 'all');
-    wp_enqueue_style('payright_style_main', plugins_url('woocommerce/assets/css/payright_style_main.css', __FILE__), array(), '1.0.0', 'all');
-    wp_enqueue_style('prpopup', plugins_url('woocommerce/assets/css/payright-modal.css', __FILE__), array(), '1.0.0', 'all');
+    wp_enqueue_style('payright_style_modal', plugins_url('woocommerce/assets/css/payright_style_modal.css', __FILE__), array(), '1.0.1', 'all');
+    wp_enqueue_style('payright_style_main', plugins_url('woocommerce/assets/css/payright_style_main.css', __FILE__), array(), '1.0.1', 'all');
+    wp_enqueue_style('prpopup', plugins_url('woocommerce/assets/css/payright-modal.css', __FILE__), array(), '1.0.1', 'all');
 
     $theme_options = get_option('woocommerce_payright_gateway_settings');
     $custom_css = '';
