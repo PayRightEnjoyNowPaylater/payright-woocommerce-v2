@@ -87,7 +87,9 @@ function payright_shop_installments($price, $product)
     }
 
     $type = $product->get_type();
-    $image_url = plugin_dir_url(__FILE__) . 'woocommerce/images/payrightlogo_rgb.png';
+    $image_url = plugin_dir_url(__FILE__) . 'woocommerce/images/Payright_Logo.svg';
+    $image_url_product = plugin_dir_url(__FILE__) . 'woocommerce/images/payrightlogo_rgb.png';
+
     $minamount = (float) $theme_options['minamount'];
     $product_instalments = $theme_options['installments'];
     $listinstallments = $theme_options['listinstallments'];
@@ -110,7 +112,7 @@ function payright_shop_installments($price, $product)
                     $des = ("<div class='prshop'><p class='payrightshopinstallment'>From $" . $result[1] . " a fortnight with<img class='payrightLogoimg' src='" . $image_url . "'/></p></div>");
                 } elseif (is_product() && $woocommerce_loop['name'] != 'related' && $woocommerce_loop['name'] != 'up-sells' && $product_instalments == 'optionOne') {
                     // Product page - product price
-                    $des = ("</br> <div class='payrightProductInstalments'>From $" . $result[1] . " a fortnight with<img class='productPayrightLogoImg' src='" . $image_url . "' /><a style='text-decoration: underline;' class='payright_opener654' id='payright_opener654'>Info</a></div>");
+                    $des = ("</br> <div class='payrightProductInstalments'>From $" . $result[1] . " a fortnight with<img class='productPayrightLogoImg' src='" . $image_url_product . "' /><a style='text-decoration: underline;' class='payright_opener654' id='payright_opener654'>Info</a></div>");
                 } elseif (is_product() && ($woocommerce_loop['name'] == 'related' || $woocommerce_loop['name'] == 'up-sells') && $related_product_instalments == 'optionOne') {
                     // Related products (upsells)
                     $des = ("<div class='prshop'><p class='payrightshopinstallment'>From $" . $result[1] . " a fortnight with<img class='payrightLogoimg' src='" . $image_url . "'/></p></div>");
@@ -139,7 +141,7 @@ add_action('wp_footer', 'payright_modal_footer');
 function payright_modal_footer()
 {
 
-    $primg = plugin_dir_url(__FILE__) . "woocommerce/images/payright-logo.png";
+    $primg = plugin_dir_url(__FILE__) . "woocommerce/images/Payright_Logo.svg";
     ob_start();
     include "woocommerce/checkout/modal/popup.php";
     $output = ob_get_contents();

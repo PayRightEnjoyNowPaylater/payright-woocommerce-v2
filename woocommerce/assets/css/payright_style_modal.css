@@ -20,7 +20,7 @@
 }
 #pricon {
     max-height: 3em !important;
-    margin-left: 0px;
+    margin-left: 0px !important;
     vertical-align: middle;
 }
 #productPayrightLogo{
@@ -34,10 +34,10 @@
     display: inline-block !important;
     float: none !important;
     vertical-align: middle !important;
-    max-width: 40%;
+    max-width: 42% !important;
     max-height: 2.5em !important;
-    width: auto !important;
     height: auto !important;
+    margin-left: -10px;
 }
 .productPayrightLogoImg {
     max-height: 3em !important;
