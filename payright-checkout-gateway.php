@@ -46,6 +46,7 @@ if (!class_exists('Payright_WC_Dependencies')) {
 if (!function_exists('is_woocommerce_active')) {
     /**
      * Checking the WooCommerce Enable Status
+     *
      * @return bool
      */
     function is_woocommerce_active()
@@ -87,8 +88,8 @@ function payright_shop_installments($price, $product)
     }
 
     $type = $product->get_type();
-    $image_url = plugin_dir_url(__FILE__) . 'woocommerce/images/Payright_Logo.svg';
-    $image_url_product = plugin_dir_url(__FILE__) . 'woocommerce/images/payrightlogo_rgb.png';
+    $image_url = plugin_dir_url(__FILE__).'woocommerce/images/Payright_Logo.svg';
+    $image_url_product = plugin_dir_url(__FILE__).'woocommerce/images/payrightlogo_rgb.png';
 
     $minamount = (float) $theme_options['minamount'];
     $product_instalments = $theme_options['installments'];
@@ -100,37 +101,46 @@ function payright_shop_installments($price, $product)
 
         $result = Payright_Call::payright_calculate_single_product_installment($product_price);
 
-        if ($result != null || $result != false) {
+        if ($result != null) {
 
-            if ($type == "simple" || $type == "variable") {
+            switch ($type) {
+                case "simple":
+                case "variable":
 
-                if ((is_shop() || is_product_category()) && $listinstallments == 'optionOne') {
-                    // List page
-                    $des = ("<div class='prshop'><p class='payrightshopinstallment'>From $" . $result[1] . " a fortnight with<img class='payrightLogoimg' src='" . $image_url . "'/></p></div>");
-                } elseif ((is_home() || is_front_page()) && $front_page_instalments == 'optionOne') {
-                    // Front page
-                    $des = ("<div class='prshop'><p class='payrightshopinstallment'>From $" . $result[1] . " a fortnight with<img class='payrightLogoimg' src='" . $image_url . "'/></p></div>");
-                } elseif (is_product() && $woocommerce_loop['name'] != 'related' && $woocommerce_loop['name'] != 'up-sells' && $product_instalments == 'optionOne') {
-                    // Product page - product price
-                    $des = ("</br> <div class='payrightProductInstalments'>From $" . $result[1] . " a fortnight with<img class='productPayrightLogoImg' src='" . $image_url_product . "' /><a style='text-decoration: underline;' class='payright_opener654' id='payright_opener654'>Info</a></div>");
-                } elseif (is_product() && ($woocommerce_loop['name'] == 'related' || $woocommerce_loop['name'] == 'up-sells') && $related_product_instalments == 'optionOne') {
-                    // Related products (upsells)
-                    $des = ("<div class='prshop'><p class='payrightshopinstallment'>From $" . $result[1] . " a fortnight with<img class='payrightLogoimg' src='" . $image_url . "'/></p></div>");
-                }
-            } elseif ($type == "variation") {
+                    if ((is_shop() || is_product_category()) && $listinstallments == 'optionOne') {
+                        // List page
+                        $des = ("<div class='prshop'><p class='payrightshopinstallment'>From $".$result[1]." a fortnight with<img class='payrightLogoimg' src='".$image_url."'/></p></div>");
+                    } elseif ((is_home() || is_front_page()) && $front_page_instalments == 'optionOne') {
+                        // Front page
+                        $des = ("<div class='prshop'><p class='payrightshopinstallment'>From $".$result[1]." a fortnight with<img class='payrightLogoimg' src='".$image_url."'/></p></div>");
+                    } elseif (is_product() && $woocommerce_loop['name'] != 'related' && $woocommerce_loop['name'] != 'up-sells' && $product_instalments == 'optionOne') {
+                        // Product page - product price
+                        $des = ("</br> <div class='payrightProductInstalments'>From $".$result[1]." a fortnight with<img class='productPayrightLogoImg' src='".$image_url_product."' /><a style='text-decoration: underline;' class='payright_opener654' id='payright_opener654'>Info</a></div>");
+                    } elseif (is_product() && ($woocommerce_loop['name'] == 'related' || $woocommerce_loop['name'] == 'up-sells') && $related_product_instalments == 'optionOne') {
+                        // Related products (upsells)
+                        $des = ("<div class='prshop'><p class='payrightshopinstallment'>From $".$result[1]." a fortnight with<img class='payrightLogoimg' src='".$image_url."'/></p></div>");
+                    }
 
-                if (is_product() && $woocommerce_loop['name'] != 'related' && $woocommerce_loop['name'] != 'up-sells' && $product_instalments == 'optionOne') {
-                    // Varient product page - product price
-                    $des = ("</br> <div class='payrightProductInstalments'>From $" . $result[1] . " a fortnight with<img class='productPayrightLogoImg' src='" . $image_url . "' ><a style='text-decoration: underline;' class='payright_opener654V' id='payright_opener654V'>Info</a></div>");
-                } elseif (is_product() && ($woocommerce_loop['name'] == 'related' || $woocommerce_loop['name'] == 'up-sells') && $related_product_instalments == 'optionOne') {
-                    // Related products (upsells)
-                    $des = ("<div class='prshop'><p class='payrightshopinstallment'>From $" . $result[1] . " a fortnight with<img class='payrightLogoimg' src='" . $image_url . "'/></p></div>");
-                }
+                    break;
+
+                case "variation":
+
+                    if (is_product() && $woocommerce_loop['name'] != 'related' && $woocommerce_loop['name'] != 'up-sells' && $product_instalments == 'optionOne') {
+                        // Variation product page - product price
+                        $des = ("</br> <div class='payrightProductInstalments'>From $".$result[1]." a fortnight with<img class='productPayrightLogoImg' src='".$image_url."' ><a style='text-decoration: underline;' class='payright_opener654V' id='payright_opener654V'>Info</a></div>");
+                    } elseif (is_product() && ($woocommerce_loop['name'] == 'related' || $woocommerce_loop['name'] == 'up-sells') && $related_product_instalments == 'optionOne') {
+                        // Related products (upsells)
+                        $des = ("<div class='prshop'><p class='payrightshopinstallment'>From $".$result[1]." a fortnight with<img class='payrightLogoimg' src='".$image_url."'/></p></div>");
+                    }
+
+                    break;
+                default:
+
             }
         }
     }
 
-    return $price . $des;
+    return $price.$des;
 }
 
 add_filter('woocommerce_get_price_html', 'payright_shop_installments', 100, 2);
@@ -141,13 +151,13 @@ add_action('wp_footer', 'payright_modal_footer');
 function payright_modal_footer()
 {
 
-    $primg = plugin_dir_url(__FILE__) . "woocommerce/images/Payright_Logo.svg";
+    $primg = plugin_dir_url(__FILE__)."woocommerce/images/Payright_Logo.svg";
     ob_start();
     include "woocommerce/checkout/modal/popup.php";
     $output = ob_get_contents();
     ob_end_clean();
 
-    echo " <div id='payright_modal654' class='payrightmodal' role='dialog' class='modal-popup payright modal-slide _inner-scroll _show pr-model' aria-describedby='modal-content-1' data-role='modal' data-type='popup' tabindex='0' ><!-- Modal content -->" . $output . " </div>";
+    echo " <div id='payright_modal654' class='payrightmodal' role='dialog' class='modal-popup payright modal-slide _inner-scroll _show pr-model' aria-describedby='modal-content-1' data-role='modal' data-type='popup' tabindex='0' ><!-- Modal content -->".$output." </div>";
 }
 
 // unsets payright_gateway
@@ -194,7 +204,7 @@ function payright_filter_gateways($gateway_list)
 /**
  * Add the gateway to WC Available Gateways
  *
- * @param array $gateways all available WC gateways
+ * @param  array  $gateways  all available WC gateways
  * @return array $gateways all WC gateways + payright gateway
  */
 function wc_payright_add_to_gateways($gateways)
@@ -202,30 +212,34 @@ function wc_payright_add_to_gateways($gateways)
     $gateways[] = 'WC_Gateway_Payright';
     return $gateways;
 }
+
 add_filter('woocommerce_payment_gateways', 'wc_payright_add_to_gateways');
 
 /**
  * Adds plugin page links
  *
- * @since 1.0.0
- * @param array $links all plugin links
+ * @param  array  $links  all plugin links
  * @return array $links all plugin links + our custom links (i.e., "Settings")
+ * @since 1.0.0
  */
 function wc_payright_gateway_plugin_links($links)
 {
     $plugin_links = array(
-        '<a href="' . admin_url('admin.php?page=wc-settings&tab=checkout&section=payright_gateway') . '">' . __('Configure', 'wc-gateway-payright') . '</a>',
+        '<a href="'.admin_url('admin.php?page=wc-settings&tab=checkout&section=payright_gateway').'">'.__('Configure',
+            'wc-gateway-payright').'</a>',
 
     );
 
     return array_merge($plugin_links, $links);
 }
-add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'wc_payright_gateway_plugin_links');
+
+add_filter('plugin_action_links_'.plugin_basename(__FILE__), 'wc_payright_gateway_plugin_links');
 
 function payright_scripts()
 {
     // Register the script like this for the plugin:
-    wp_enqueue_script('payrightpayment', plugins_url('/woocommerce/assets/js/payrightpayment.js', __FILE__), array(), '1.0.0', 'true');
+    wp_enqueue_script('payrightpayment', plugins_url('/woocommerce/assets/js/payrightpayment.js', __FILE__), array(),
+        '1.0.0', 'true');
 
     $theme_options = get_option('woocommerce_payright_gateway_settings');
     $cssoverride = $theme_options['moduleOverride'];
@@ -237,14 +251,18 @@ function payright_scripts()
 
     wp_localize_script('payrightpayment', 'payrightModuleOverride', $js_class);
 }
+
 add_action('wp_enqueue_scripts', 'payright_scripts', 5);
 
 function payright_styles()
 {
     // Register the style like this for a plugin:
-    wp_enqueue_style('payright_style_modal', plugins_url('woocommerce/assets/css/payright_style_modal.css', __FILE__), array(), '1.0.1', 'all');
-    wp_enqueue_style('payright_style_main', plugins_url('woocommerce/assets/css/payright_style_main.css', __FILE__), array(), '1.0.1', 'all');
-    wp_enqueue_style('prpopup', plugins_url('woocommerce/assets/css/payright-modal.css', __FILE__), array(), '1.0.1', 'all');
+    wp_enqueue_style('payright_style_modal', plugins_url('woocommerce/assets/css/payright_style_modal.css', __FILE__),
+        array(), '1.0.1', 'all');
+    wp_enqueue_style('payright_style_main', plugins_url('woocommerce/assets/css/payright_style_main.css', __FILE__),
+        array(), '1.0.1', 'all');
+    wp_enqueue_style('prpopup', plugins_url('woocommerce/assets/css/payright-modal.css', __FILE__), array(), '1.0.1',
+        'all');
 
     $theme_options = get_option('woocommerce_payright_gateway_settings');
     $custom_css = '';
@@ -274,19 +292,19 @@ function payright_wc_locate_template($template, $template_name, $template_path)
         $template_path = $woocommerce->template_url;
     }
 
-    $plugin_path = payright_plugin_path() . '/woocommerce/';
+    $plugin_path = payright_plugin_path().'/woocommerce/';
 
     // Look within passed path within the theme - this is priority
     $template = locate_template(
         array(
-            $template_path . $template_name,
+            $template_path.$template_name,
             $template_name,
         )
     );
 
     // Modification: Get the template from this plugin, if it exists
-    if (!$template && file_exists($plugin_path . $template_name)) {
-        $template = $plugin_path . $template_name;
+    if (!$template && file_exists($plugin_path.$template_name)) {
+        $template = $plugin_path.$template_name;
     }
 
     // Use default template
@@ -314,7 +332,7 @@ function payright_redirect($request)
         if ($planStatus === "COMPLETE") {
             $json = Payright_Call::payright_get_plan_data_by_token($token);
             if (isset($json->data->planNumber)) {
-                $planNumber          = $json->data->planNumber;
+                $planNumber = $json->data->planNumber;
             }
 
             $order->update_status('processing', 'wc-gateway-payright');
@@ -385,7 +403,7 @@ add_action('woocommerce_order_status_completed', 'pr_order_status_shipped_callba
 add_action('woocommerce_admin_order_data_after_order_details', 'payright_order_details_plan_id');
 function payright_order_details_plan_id($order)
 {
-?>
+    ?>
     <?php
 
     $id = $order->get_id();
@@ -393,17 +411,17 @@ function payright_order_details_plan_id($order)
     $plan_name = get_post_meta($id, '_payright_plan_name', true);
 
     if (($is_payright == 'payright_gateway') && (!empty($plan_name))) :
-    ?>
-        <br class="clear" />
+        ?>
+        <br class="clear"/>
         <h4>Plan Details</h4>
 
         <div class="address">
 
-            <p><strong>Payright Plan Name : <strong><?php echo $plan_name ?> </p>
+            <p><strong>Payright Plan Name : <strong><?php echo $plan_name ?></p>
 
         </div>
 
-<?php
+    <?php
     endif;
 }
 
@@ -434,7 +452,8 @@ function wc_payright_gateway_init()
             $this->has_fields = false;
             $this->title = __('Payright - Interest Free Payments', 'wc-gateway-payright');
             $this->method_title = __('Payright - Interest Free Payments', 'wc-gateway-payright');
-            $this->method_description = __('Payright redirects customers to Payright to enter their payment information', 'wc-gateway-payright');
+            $this->method_description = __('Payright redirects customers to Payright to enter their payment information',
+                'wc-gateway-payright');
 
             // Load the settings.
             $this->init_form_fields();
@@ -443,7 +462,7 @@ function wc_payright_gateway_init()
             // Define user set variables
             $this->enabled = $this->get_option('enabled');
             $this->title = 'Payright - Buy now pay later';
-            $this->accesstoken      = $this->get_option('accesstoken');
+            $this->accesstoken = $this->get_option('accesstoken');
             $this->minamount = $this->get_option('minamount');
 
             $this->sandbox = $this->get_option('sandbox');
@@ -456,7 +475,7 @@ function wc_payright_gateway_init()
             $this->moduleOverride = $this->get_option('moduleOverride');
             $this->customCss = $this->get_option('customCss');
             // Actions
-            add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
+            add_action('woocommerce_update_options_payment_gateways_'.$this->id, array($this, 'process_admin_options'));
         }
 
         /**
@@ -471,7 +490,8 @@ function wc_payright_gateway_init()
                     'type' => 'checkbox',
                     'label' => __('Enable Payright', 'wc-gateway-payright'),
                     'default' => 'No',
-                    'description' => __('plugin may be automatically disabled if cart or product price is less than minimum amount.', 'wc-gateway-payright'),
+                    'description' => __('plugin may be automatically disabled if cart or product price is less than minimum amount.',
+                        'wc-gateway-payright'),
                     'desc_tip' => true,
                 ),
 
@@ -499,17 +519,18 @@ function wc_payright_gateway_init()
                     ),
                     'default' => 'optionOne',
                 ),
-                'accesstoken'            => array(
-                    'title'       => __('Access Token', 'wc-gateway-payright'),
-                    'type'        => 'text',
-                    'default'     => __('', 'wc-gateway-payright'),
+                'accesstoken' => array(
+                    'title' => __('Access Token', 'wc-gateway-payright'),
+                    'type' => 'text',
+                    'default' => __('', 'wc-gateway-payright'),
                     'placeholder' => __('', 'wc-gateway-payright'),
-                    'desc_tip'    => true,
+                    'desc_tip' => true,
                 ),
                 'minamount' => array(
                     'title' => __('Minimum Amount', 'wc-gateway-payright'),
                     'type' => 'text',
-                    'description' => __('This amount determines if payright is enabled or not on Checkout and Product page', 'wc-gateway-payright'),
+                    'description' => __('This amount determines if payright is enabled or not on Checkout and Product page',
+                        'wc-gateway-payright'),
                     'default' => __('5', 'wc-gateway-payright'),
                     'desc_tip' => true,
                 ),
@@ -555,7 +576,8 @@ function wc_payright_gateway_init()
                     'type' => 'textarea',
                     'description' => __('Enter your class or id of the element for your sticky header or element that overrides payright pop up'),
                     'default' => __('', 'wc-gateway-payright'),
-                    'placeholder' => __('Enter your class or id of the element for your sticky header or element that overrides payright pop up for example: .classOne #elementId', 'wc-gateway-payright'),
+                    'placeholder' => __('Enter your class or id of the element for your sticky header or element that overrides payright pop up for example: .classOne #elementId',
+                        'wc-gateway-payright'),
                     'desc_tip' => true,
                 ),
                 'customCss' => array(
@@ -573,8 +595,8 @@ function wc_payright_gateway_init()
         /**
          * Get the Payright request URL for an order.
          *
-         * @param  WC_Order $order   Order object.
-         * @param  bool     $sandbox Whether to use sandbox mode or not.
+         * @param  WC_Order  $order  Order object.
+         * @param  bool  $sandbox  Whether to use sandbox mode or not.
          * @return string
          */
         public function get_request_url($order)
@@ -593,7 +615,7 @@ function wc_payright_gateway_init()
 
             if ($this->payrightPayment == 'error') {
                 return array(
-                    'result'   => 'failure',
+                    'result' => 'failure',
                     'messages' => 'Payright error',
                 );
             } else {
@@ -604,7 +626,7 @@ function wc_payright_gateway_init()
         /**
          * Process the payment and return the result.
          *
-         * @param  int $order_id Order ID.
+         * @param  int  $order_id  Order ID.
          * @return array
          */
         public function process_payment($order_id)
@@ -624,11 +646,12 @@ function wc_payright_gateway_init()
         public function get_icon()
         {
             $icon_html = " ";
-            $image_url = plugin_dir_url(__FILE__) . 'woocommerce/images/payrightlogo_rgb.png';
+            $image_url = plugin_dir_url(__FILE__).'woocommerce/images/payrightlogo_rgb.png';
 
-            $icon_html .= '<img src="' . $image_url . '"" id="pricon" />';
+            $icon_html .= '<img src="'.$image_url.'"" id="pricon" />';
             return apply_filters('woocommerce_gateway_icon', $icon_html, $this->id);
         }
+
         public function get_description()
         {
             $cart_total = WC()->cart->total;
@@ -651,7 +674,7 @@ function wc_payright_gateway_init()
                     <div class="payRight_columns">
 
                         <div class="insideColumns payRight_is-5" id="payrightis5">
-                            <h2 class="payRightH2 paymentstitle" id="payrightmargin">$' . $result[2] . ' today then ' . $result[0] . ' Fortnightly instalments of $' . $result[1] . '</h2>
+                            <h2 class="payRightH2 paymentstitle" id="payrightmargin">$'.$result[2].' today then '.$result[0].' Fortnightly instalments of $'.$result[1].'</h2>
                             <p class="payRightPayment" id="payrightdeposit" >Excluding deposit</p>
                         </div>
 
