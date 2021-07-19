@@ -3,9 +3,12 @@
   padding: 0;
 }
 
-/*.payrightmodal{
+/*
+.payrightModal {
   padding-top: 0px;
-}*/
+}
+*/
+
 .modal-slide .action-close {
   float: right;
   display: block;
@@ -19,7 +22,7 @@
   vertical-align: middle;
 }
 
-#PayrightHowitWorksmodalPopup {
+#PayrightHowItWorksModalPopup {
   background-color: #fff;
   color: #251450;
   font-family: 'Roboto', sans-serif !important;
@@ -28,64 +31,63 @@
   text-align: center;
   padding: 1rem;
 }
-#PayrightHowitWorksmodalPopup * {
+#PayrightHowItWorksModalPopup * {
   box-sizing: border-box;
 }
-#PayrightHowitWorksmodalPopup header {
+#PayrightHowItWorksModalPopup header {
   display: flex;
   justify-content: center;
   padding: 1rem 0 0;
 }
-#PayrightHowitWorksmodalPopup header img {
+#PayrightHowItWorksModalPopup header img {
   height: 100px;
   width: auto;
 }
-#PayrightHowitWorksmodalPopup h1,
-#PayrightHowitWorksmodalPopup h2,
-#PayrightHowitWorksmodalPopup h3,
-#PayrightHowitWorksmodalPopup .text,
-#PayrightHowitWorksmodalPopup .tellmemore {
+#PayrightHowItWorksModalPopup h1,
+#PayrightHowItWorksModalPopup h2,
+#PayrightHowItWorksModalPopup h3,
+#PayrightHowItWorksModalPopup .text,
+#PayrightHowItWorksModalPopup .tellMeMore {
   font-family: 'Quicksand', sans-serif !important;
   font-weight: 700;
   letter-spacing: -0.03em;
 }
-#PayrightHowitWorksmodalPopup h1,
-#PayrightHowitWorksmodalPopup .text-big {
+#PayrightHowItWorksModalPopup h1,
+#PayrightHowItWorksModalPopup .text-big {
   color: #5431ff;
   font-size: 18px !important;
   line-height: 21px;
   margin-bottom: 1rem;
 }
-#PayrightHowitWorksmodalPopup h1 {
+#PayrightHowItWorksModalPopup h1 {
   margin-bottom: 2rem;
 }
-#PayrightHowitWorksmodalPopup .icon-container {
+#PayrightHowItWorksModalPopup .icon-container {
   background-color: #24004f;
   color: #fff;
-  border-radius: 1rem;
-  border-bottom-left-radius: 0;
+  border-radius: 1rem 1rem 1rem 0;
   padding: 1rem;
   margin: 0 auto 2rem;
 }
-#PayrightHowitWorksmodalPopup .icon-container svg {
+#PayrightHowItWorksModalPopup .icon-container svg {
   width: 40px;
   height: 40px;
   display: block;
 }
-#PayrightHowitWorksmodalPopup .icon-container.light {
+#PayrightHowItWorksModalPopup .icon-container.light {
   background-color: #eff1f6;
   color: #24004f;
 }
-#PayrightHowitWorksmodalPopup .icon-container.light svg {
+#PayrightHowItWorksModalPopup .icon-container.light svg {
   width: 60px;
   height: 60px;
   margin: 0 auto;
 }
-#PayrightHowitWorksmodalPopup .icon-container.light li .text {
+#PayrightHowItWorksModalPopup .icon-container.light li .text {
   font-size: 15px;
   line-height: 18px;
 }
-#PayrightHowitWorksmodalPopup .icon-container ul {
+#PayrightHowItWorksModalPopup .icon-container ul {
   margin: 0 auto;
   padding: 0;
   position: relative;
@@ -96,7 +98,7 @@
   align-items: flex-start;
   flex-wrap: wrap;
 }
-#PayrightHowitWorksmodalPopup .icon-container li {
+#PayrightHowItWorksModalPopup .icon-container li {
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -105,11 +107,11 @@
   padding: 0;
   margin: 0;
 }
-#PayrightHowitWorksmodalPopup .icon-container li .icon {
+#PayrightHowItWorksModalPopup .icon-container li .icon {
   text-align: center;
   flex-grow: 0;
 }
-#PayrightHowitWorksmodalPopup .icon-container li .text {
+#PayrightHowItWorksModalPopup .icon-container li .text {
   text-align: center;
   padding: 1rem 1rem 0;
   flex-grow: 1;
@@ -117,49 +119,49 @@
   line-height: 15px;
 }
 @media (min-width: 825px) {
-  #PayrightHowitWorksmodalPopup .icon-container li {
+  #PayrightHowItWorksModalPopup .icon-container li {
     flex-basis: 25%;
   }
 }
 @media (max-width: 1390px) {
-  #PayrightHowitWorksmodalPopup .icon-container br {
+  #PayrightHowItWorksModalPopup .icon-container br {
     display: none;
   }
 }
-#PayrightHowitWorksmodalPopup h2 {
+#PayrightHowItWorksModalPopup h2 {
   color: #fff;
   margin: 0 0 8px;
   padding: 0;
   font-size: 24px;
   line-height: 27px;
 }
-#PayrightHowitWorksmodalPopup h3 {
+#PayrightHowItWorksModalPopup h3 {
   color: #24004f;
   font-size: 15px;
   line-height: 15px;
   margin: 0 0 0.5rem;
 }
-#PayrightHowitWorksmodalPopup .important-info {
+#PayrightHowItWorksModalPopup .important-info {
   margin: 0 auto 3rem;
   max-width: 800px;
   text-align: center;
 }
-#PayrightHowitWorksmodalPopup .important-info p {
+#PayrightHowItWorksModalPopup .important-info p {
   margin: 0;
   padding: 0;
   font-size: 12px;
   line-height: 14.4px;
   letter-spacing: -0.03em;
 }
-#PayrightHowitWorksmodalPopup .important-info a {
+#PayrightHowItWorksModalPopup .important-info a {
   color: #251450;
   font-weight: 700;
   text-decoration: underline;
 }
-#PayrightHowitWorksmodalPopup .important-info a:hover {
+#PayrightHowItWorksModalPopup .important-info a:hover {
   text-decoration: none;
 }
-#PayrightHowitWorksmodalPopup a.tellmemore {
+#PayrightHowItWorksModalPopup a.tellMeMore {
   background-color: #5431ff;
   color: #fff;
   font-weight: 700;
@@ -172,7 +174,7 @@
   display: inline-block;
   margin-bottom: 2rem;
 }
-#PayrightHowitWorksmodalPopup a.tellmemore:hover {
+#PayrightHowItWorksModalPopup a.tellMeMore:hover {
   text-decoration: none;
 }
 

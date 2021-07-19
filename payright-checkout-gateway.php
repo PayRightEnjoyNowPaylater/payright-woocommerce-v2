@@ -6,7 +6,7 @@
  * Author: Payright
  * Author URI: https://www.payright.com.au/
  * Text Domain: wc-gateway-payright
- * Version: 2.0.8
+ * Version: 2.0.9
  *
  * Copyright: (c) 2019 Payright
  *
@@ -100,6 +100,7 @@ function payright_shop_installments($price, $product)
     if ($product_price >= $minamount) {
 
         $result = Payright_Call::payright_calculate_single_product_installment($product_price);
+        $result[3] = strtolower(substr($result[3], 0, -2)); // strip 'ly' text, and set to lowercase.
 
         if ($result != null) {
 
@@ -151,13 +152,13 @@ add_action('wp_footer', 'payright_modal_footer');
 function payright_modal_footer()
 {
 
-    $primg = plugin_dir_url(__FILE__)."woocommerce/images/Payright_Logo.svg";
+    $payrightImage = plugin_dir_url(__FILE__) . "woocommerce/images/Payright_Logo.svg";
     ob_start();
     include "woocommerce/checkout/modal/popup.php";
     $output = ob_get_contents();
     ob_end_clean();
 
-    echo " <div id='payright_modal654' class='payrightmodal' role='dialog' class='modal-popup payright modal-slide _inner-scroll _show pr-model' aria-describedby='modal-content-1' data-role='modal' data-type='popup' tabindex='0' ><!-- Modal content -->".$output." </div>";
+    echo " <div id='payright_modal654' class='payrightModal' role='dialog' class='modal-popup payright modal-slide _inner-scroll _show pr-model' aria-describedby='modal-content-1' data-role='modal' data-type='popup' tabindex='0' ><!-- Modal content -->" . $output . " </div>";
 }
 
 // unsets payright_gateway
@@ -412,7 +413,7 @@ function payright_order_details_plan_id($order)
 
     if (($is_payright == 'payright_gateway') && (!empty($plan_name))) :
         ?>
-        <br class="clear"/>
+        <br class="clear" />
         <h4>Plan Details</h4>
 
         <div class="address">
@@ -534,7 +535,15 @@ function wc_payright_gateway_init()
                     'default' => __('5', 'wc-gateway-payright'),
                     'desc_tip' => true,
                 ),
-
+                'displayterm' => array(
+                    'title' => __('Display Term', 'wc-gateway-payright'),
+                    'type' => 'select',
+                    'options' => array(
+                        'optionOne' => __('Weekly'),
+                        'optionTwo' => __('Fortnightly')
+                    ),
+                    'default' => 'Fortnightly',
+                ),
                 'installments' => array(
                     'title' => __('Show Payright instalments information on Product Page', 'wc-gateway-payright'),
                     'type' => 'select',
@@ -648,7 +657,7 @@ function wc_payright_gateway_init()
             $icon_html = " ";
             $image_url = plugin_dir_url(__FILE__).'woocommerce/images/payrightlogo_rgb.png';
 
-            $icon_html .= '<img src="'.$image_url.'"" id="pricon" />';
+            $icon_html .= '<img src="' . $image_url . '"" id="payrightIcon" />';
             return apply_filters('woocommerce_gateway_icon', $icon_html, $this->id);
         }
 
@@ -669,23 +678,23 @@ function wc_payright_gateway_init()
 
             if ($result != null || $result != false) {
                 $description = '<div class="bodybox">
-                <div class="payRight_container">
+                <div class="payright_container">
                 <article>
-                    <div class="payRight_columns">
+                    <div class="payright_columns">
 
-                        <div class="insideColumns payRight_is-5" id="payrightis5">
-                            <h2 class="payRightH2 paymentstitle" id="payrightmargin">$'.$result[2].' today then '.$result[0].' Fortnightly instalments of $'.$result[1].'</h2>
-                            <p class="payRightPayment" id="payrightdeposit" >Excluding deposit</p>
+                        <div class="insideColumns payright_is-5" id="payright-is-5">
+                            <h2 class="payrightH2 paymentstitle" id="payrightmargin">$' . $result[2] . ' today then ' . $result[0] . ' instalments of $' . $result[1] . '</h2>
+                            <p class="payrightPayment" id="payrightdeposit">Excluding deposit</p>
                         </div>
 
                     </div>
                 </article>
 
                 <article>
-                    <div class="payRight_columns">
+                    <div class="payright_columns">
 
-                        <div class="insideColumns payRight_is-8" id="payrightis8">
-                            <p class="payRightPayment" id="payrightdeposit">You will be directed to the Payright website to complete the application process.<br/>Once approved you will return to our page<br/>See Payright<a href="https://www.payright.com.au/terms-of-use/"  target=" "> Terms & Conditions</a> for further information.</p>
+                        <div class="insideColumns payright_is-8" id="payrightis8">
+                            <p class="payrightPayment" id="payrightdeposit">You will be directed to the Payright website to complete the application process.<br/>Once approved you will return to our page<br/>See Payright<a href="https://www.payright.com.au/terms-of-use/"  target=" "> Terms & Conditions</a> for further information.</p>
                         </div>
                     </div>
                 </article>

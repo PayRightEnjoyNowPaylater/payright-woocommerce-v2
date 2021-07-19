@@ -1,4 +1,4 @@
-/*h1.payRightH1,h2.payRightH2,h2.payRightH2why,h2.payRightH2works,h3.payRightH3,h4.payRightH4,h5.payRightH5,h6.payRightH6, p.payRightPayment{
+/*h1.payrightH1,h2.payrightH2,h2.payrightH2why,h2.payrightH2works,h3.payrightH3,h4.payrightH4,h5.payrightH5,h6.payrightH6, p.payrightPayment{
 	font-family: 'Roboto', sans-serif;
 	color: inherit;
 }*/
@@ -7,44 +7,44 @@
 	color: white;
 }*/
 
-h1.payRightH1 {
+h1.payrightH1 {
   font-size: inherit;
   line-height: inherit;
   text-transform: uppercase;
   font-weight: 400;
   color: inherit;
 }
-h2.payRightH2 {
+h2.payrightH2 {
   font-size: inherit;
   margin: 0px;
   text-align: center;
   font-weight: 500;
 }
-.insideColumns h2.payRightH2why {
+.insideColumns h2.payrightH2why {
   font-size: 32px;
   margin: 25px 0 35px;
   text-align: center;
   /*padding-bottom: 20px;*/
 }
-.insideColumns h4.payRightH4 {
+.insideColumns h4.payrightH4 {
   font-weight: 500;
 }
-h4.payRightH4 {
+h4.payrightH4 {
   font-size: 22px;
   text-align: center;
 }
-h5.payRightH5 {
+h5.payrightH5 {
   font-weight: 900;
   font-size: 18px;
 }
-p.payRightPayment {
+p.payrightPayment {
   font-size: inherit;
   text-align: center;
   color: inherit;
   margin-bottom: 40px;
   margin-top: 0;
 }
-p.payRightp {
+p.payrightp {
   font-size: 18px;
   text-align: center;
   color: inherit;
@@ -66,7 +66,7 @@ p.payRightp {
 	color: #275f95;
 }*/
 
-.payRight_columns > .insideColumns > button.payrightbutton {
+.payright_columns > .insideColumns > button.payrightbutton {
   background-color: #275f95;
   color: #ffffff;
   font-size: 28px;
@@ -80,11 +80,11 @@ span.installments {
   color: inherit;
 }
 
-.payRight_container {
+.payright_container {
   width: auto;
   margin: auto;
 }
-#tellmemore {
+#tellMeMore {
   color: inherit;
   text-decoration-line: none;
 }
@@ -101,23 +101,23 @@ span.installments {
 .bodybox {
   margin: 0px;
 }
-.payRight_container {
+.payright_container {
   width: auto;
   margin: auto;
 }
-.insideColumns p.payRightpwhy {
+.insideColumns p.payrightpwhy {
   font-weight: 900;
   font-size: inherit;
   line-height: inherit;
   color: #275f95;
   text-align: center;
 }
-.payRight_points p {
+.payright_points p {
   font-weight: 900;
   font-size: 22px;
   line-height: inherit;
 }
-.payRight_points {
+.payright_points {
   margin: 30px 0 30px 0 !important;
 }
 .pointsCenter {
@@ -125,22 +125,22 @@ span.installments {
   border-right: 2px solid #b2b3b6;
 }
 
-.insideColumns p.payRightpimportant {
+.insideColumns p.payrightpimportant {
   color: inherit;
   text-align: left;
   font-size: 16px;
 }
 @media only screen and (max-width: 770px) {
-  h1.payRightH1 {
+  h1.payrightH1 {
     text-align: center;
     font-size: inherit;
   }
-  h2.payRightH2 {
+  h2.payrightH2 {
     text-align: center;
     font-size: inherit;
     line-height: inherit;
   }
-  p.payRightPayment {
+  p.payrightPayment {
     font-size: inherit;
     line-height: inherit;
     margin-top: 0;
@@ -162,7 +162,7 @@ span.installments {
   }
 
   .headerLast {
-    height: 0px;
+    height: 0;
   }
   .imgPayRight {
     text-align: center;
@@ -171,7 +171,7 @@ span.installments {
     width: 60%;
   }
 
-  #payRightp {
+  #payrightp {
     color: white;
   }
 }
@@ -179,12 +179,12 @@ span.installments {
   .bodybox {
     padding: 0 40px 0 40px;
   }
-  h2.payRightH2 {
+  h2.payrightH2 {
     text-align: center;
     font-size: inherit;
     line-height: inherit;
   }
-  #payRightp {
+  #payrightp {
     color: inherit;
   }
 }

@@ -1,33 +1,38 @@
 ## payright-woocommerce
+<p>The Payright plugin for WooCommerce.</p>
+<p>Give your customers the option to pay in convenient zero-interest instalments.</p>
+<p>Payright helps turn ‘too much’ into ‘too easy’ by spreading the cost of purchases over time. The "Payright" plugin provides the option to choose Payright as the payment method at the checkout. </p>
+<p>It also provides the functionality to display the Payright logo and instalment calculations below product prices on category pages, individual product pages, home pages and on the checkout page. For each payment that is approved by Payright, an order will be created inside the WooCommerce system like any other order. Payright plans will activate once a product is shipped.</p>
 
-PayRight payment method plugin for WooCommerce, follow the steps below for 
-configuration setup and installation.
+<p>Please follow the steps below for setup, installation and configuration.</p>
 
-### 1.1 Installation
+### Installation
 This section outlines the steps to install the Payright plugin for the first time.
 
 #### Requirements
 + Access Token - A 'sandbox access token', or 'production access token'.
++ Wordpress - Minimum version 5.6.x
++ WooCommerce Minimum version 5.2.x
 
 #### How to install
 
 1. Download the 'payright-woocommerce' plugin.
-2. Navigate to the "Add New" in the plugins dashboard.
+2. Navigate to the "Add New" in the 'Plugins' dashboard.
 2. Navigate to the "Upload" area.
 3. Select the 'payright-woocommerce' .zip file from your computer.
 4. Click "Install Now".
 5. Activate the plugin in the 'Plugin' dashboard.
 
-### 1.2	WooCommerce Configuration
+### Configuration - WooCommerce
 Payright operates under assumptions based on Wordpress configurations. To align with these assumptions, the Wordpress configurations must reflect the below.
 
 1. Store 'Country' set to 'Australia' or 'New Zealand'.
 2. Store 'Currency' set to 'AUD' or 'NZD', according to 'Country'.
 3. WooCommerce installed.
 
-### 1.3	Payright Plugin 
+### How does it work
 
-#### How does it work
+#### Checkout with Payright
 A checkout processed by the Payright payment method, follows the checkout flow shown 
 in the diagram below:
 
@@ -50,7 +55,7 @@ at the Merchant Portal (https://merchant.payright.com.au/).
 
 > If there is an issue with the plan activation, please contact support@payright.com.au.
 
-#### Primary Configuration
+#### Pre-requisite Plugin Configuration
 Complete the below steps to configure your Payright plugin:
 
 1. Go to plugins page and click 'Configure'.
@@ -62,7 +67,7 @@ Complete the below steps to configure your Payright plugin:
     + Uncheck 'Enable Sandbox Mode' for a live store and legitimate transactions.
 6. Click 'Save Changes'.
 
-#### Secondary Configurations
+#### Optional Configuration
 1. Navigate to WooCommerce > Settings > Payments.
 2. 'Enable Payright' and click on the 'Manage' button under 'Payment' for Payright.
 3. Configure the display of the Payright installments details on:

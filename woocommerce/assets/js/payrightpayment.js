@@ -25,7 +25,7 @@ jQuery(document).ready(function () {
         });
       }
     };
-    jQuery('#PayrightHowitWorksmodalPopup > #close').click(function (event) {
+    jQuery('#PayrightHowItWorksModalPopup > #close').click(function (event) {
       jQuery('#payright_modal654').hide();
       array.forEach(function (entry) {
         jQuery('' + entry + '').css('z-index', 'initial');
