@@ -194,7 +194,7 @@ class Payright_Call
             } catch (\Exception $e) {
                 return "Error";
             }
-        } 
+        }
     }
 
     public static function payright_calculate_single_product_installment($sale_amount)
@@ -205,7 +205,6 @@ class Payright_Call
             $get_rates                = $_SESSION['rates'];
             $conf                     = $_SESSION['other'];
             $establishment_fees_array = $_SESSION['establishmentFeesArray'];
-
 
             // Get your 'minimum deposit amount', from 'rates' data received and sale amount.
             $minimumDepositAndTerm = self::get_minimum_deposit_and_term($get_rates, $sale_amount);
@@ -220,11 +219,12 @@ class Payright_Call
             $get_min_deposit = $minimumDepositAndTerm['minimumDepositAmount'];
             $loan_term = $minimumDepositAndTerm['minimumDepositTerm'];
             $loan_amount = $sale_amount - $get_min_deposit;
-            $get_frequancy   = self::payright_get_payment_frequancy($account_keeping_fees, $loan_term);
+            $get_frequency   = self::payright_get_payment_frequency($account_keeping_fees, $loan_term);
 
-            $calculated_no_of_repayments     = $get_frequancy['numberofRepayments'];
-            $calculated_account_keeping_fees = $get_frequancy['accountKeepingFees'];
-            $formated_loan_amount = number_format((float) $loan_amount, 2, '.', '');
+            $calculated_no_of_repayments     = $get_frequency['numberOfRepayments'];
+            $calculated_account_keeping_fees = $get_frequency['accountKeepingFees'];
+            $set_term_frequency_to_display = $get_frequency['repaymentFrequency']; // to show suggested repayment term
+            $formatted_loan_amount = number_format((float) $loan_amount, 2, '.', '');
 
             $res_establishment_fees = self::payright_get_establishment_fees($loan_term, $establishment_fees_array);
 
@@ -232,18 +232,25 @@ class Payright_Call
                 $calculated_no_of_repayments,
                 $calculated_account_keeping_fees,
                 $res_establishment_fees,
-                $formated_loan_amount,
+                $formatted_loan_amount,
                 $payment_processing_fee
             );
 
-            $payrightResult = array($calculated_no_of_repayments, $CalculateRepayments, $get_min_deposit);
-            return $payrightResult;
+            // return results in array bundle
+            return array($calculated_no_of_repayments, $CalculateRepayments, $get_min_deposit, $set_term_frequency_to_display);
 
         } else {
             return false;
         }
     }
 
+    /**
+     * Fetch loan term for sale.
+     *
+     * @param $rates
+     * @param $sale_amount
+     * @return int|mixed
+     */
     public static function payright_fetch_loan_term_for_sale($rates, $sale_amount)
     {
         $rates_array = array();
@@ -254,17 +261,24 @@ class Payright_Call
             $rates_array[$key]['Max']  = $rate->maximumPurchase;
 
             if (($sale_amount >= $rates_array[$key]['Min'] && $sale_amount <= $rates_array[$key]['Max'])) {
-                $generateloan_term[] = $rates_array[$key]['Term'];
+                $generate_loan_term[] = $rates_array[$key]['Term'];
             }
         }
 
-        if (isset($generateloan_term)) {
-            return min($generateloan_term);
+        if (isset($generate_loan_term)) {
+            return min($generate_loan_term);
         } else {
             return 0;
         }
     }
 
+    /**
+     * Get minimum deposit and term.
+     *
+     * @param $rates
+     * @param $saleAmount
+     * @return array
+     */
     public static function get_minimum_deposit_and_term($rates, $saleAmount)
     {
         // Iterate through each term, apply the minimum deposit to the sale amount and see if it fits in the rate card. If not found, move to a higher term
@@ -287,16 +301,27 @@ class Payright_Call
         return [];
     }
 
-    public static function payright_get_payment_frequancy($account_keeping_fees, $loan_term)
+    /**
+     * Get payment frequency.
+     *
+     * @param $account_keeping_fees
+     * @param $loan_term
+     * @return array
+     */
+    public static function payright_get_payment_frequency($account_keeping_fees, $loan_term)
     {
-        $repayment_frequecy = 'Fortnightly';
+        $theme_options = get_option('woocommerce_payright_gateway_settings');
 
-        if ($repayment_frequecy == 'Weekly') {
+        $repayment_frequency = $theme_options['displayterm'];
+
+        // Weekly
+        if ($repayment_frequency == 'optionOne') {
             $j = floor($loan_term * (52 / 12));
             $o = $account_keeping_fees * 12 / 52;
         }
 
-        if ($repayment_frequecy == 'Fortnightly') {
+        // Fortnightly
+        if ($repayment_frequency == 'optionTwo') {
             $j = floor($loan_term * (26 / 12));
             if ($loan_term == 3) {
                 $j = 7;
@@ -304,7 +329,7 @@ class Payright_Call
             $o = $account_keeping_fees * 12 / 26;
         }
 
-        if ($repayment_frequecy == 'Monthly') {
+        if ($repayment_frequency == 'Monthly') {
             $j = parseInt(k);
             $o = $account_keeping_fees;
         }
@@ -312,12 +337,32 @@ class Payright_Call
         $number_of_repayments = $j;
         $account_keeping_fees = $o;
 
-        $return_array['numberofRepayments'] = $number_of_repayments;
+        // Prepare array bundle in return statement
+        $return_array['numberOfRepayments'] = $number_of_repayments;
         $return_array['accountKeepingFees'] = round($account_keeping_fees, 2);
+        switch($repayment_frequency) {
+            case "optionOne":
+                $return_array['repaymentFrequency'] = "Weekly";
+                break;
+            case "optionThree":
+                $return_array['repaymentFrequency'] = "Monthly";
+                break;
+            case "optionTwo":
+            default:
+                $return_array['repaymentFrequency'] = "Fortnightly";
+                break;
+        }
 
         return $return_array;
     }
 
+    /**
+     * Get establishment fees.
+     *
+     * @param $loan_term
+     * @param $establishment_fees_array
+     * @return int|mixed
+     */
     public static function payright_get_establishment_fees($loan_term, $establishment_fees_array)
     {
         $establishment_fees  = $establishment_fees_array;
@@ -338,6 +383,16 @@ class Payright_Call
         return $h;
     }
 
+    /**
+     * Calculate repayment amount.
+     *
+     * @param $number_of_repayments
+     * @param $account_keeping_fees
+     * @param $establishment_fees
+     * @param $loan_amount
+     * @param $payment_processing_fee
+     * @return string|null
+     */
     public static function payright_calculate_repayment($number_of_repayments, $account_keeping_fees, $establishment_fees, $loan_amount, $payment_processing_fee)
     {
 
