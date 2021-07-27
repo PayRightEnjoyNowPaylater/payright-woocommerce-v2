@@ -6,7 +6,7 @@
  * Author: Payright
  * Author URI: https://www.payright.com.au/
  * Text Domain: wc-gateway-payright
- * Version: 2.0.9
+ * Version: 2.0.10
  *
  * Copyright: (c) 2019 Payright
  *
@@ -442,6 +442,25 @@ function wc_payright_gateway_init()
 {
     class WC_Gateway_Payright extends WC_Payment_Gateway
     {
+        public $region;
+        public $title;
+        public $enabled;
+        public $accesstoken;
+        public $sandbox;
+        public $instructions;
+        public $installments;
+        public $minamount;
+        public $displayterm;
+        public $listinstallments;
+        public $frontinstallments;
+        public $moduleOverride;
+        public $relatedinstallments;
+        public $customCss;
+        public $method_description;
+        public $method_title;
+        public $has_fields;
+        public $icon;
+        public $id;
 
         /**
          * Constructor for the gateway.
@@ -464,12 +483,12 @@ function wc_payright_gateway_init()
             $this->enabled = $this->get_option('enabled');
             $this->title = 'Payright - Buy now pay later';
             $this->accesstoken = $this->get_option('accesstoken');
-            $this->minamount = $this->get_option('minamount');
-
             $this->sandbox = $this->get_option('sandbox');
             $this->instructions = $this->get_option('instructions');
             $this->installments = $this->get_option('installments');
             $this->region = $this->get_option('region');
+            $this->minamount = $this->get_option('minamount');
+            $this->displayterm = $this->get_option('displayterm');
             $this->listinstallments = $this->get_option('listinstallments');
             $this->frontinstallments = $this->get_option('frontinstallments');
             $this->relatedinstallments = $this->get_option('relatedinstallments');
@@ -511,6 +530,7 @@ function wc_payright_gateway_init()
                     'default' => __('Payright', 'wc-gateway-payright'),
                     'desc_tip' => true,
                 ),
+
                 'region' => array(
                     'title' => __('Region', 'wc-gateway-payright'),
                     'type' => 'select',
@@ -520,6 +540,7 @@ function wc_payright_gateway_init()
                     ),
                     'default' => 'optionOne',
                 ),
+
                 'accesstoken' => array(
                     'title' => __('Access Token', 'wc-gateway-payright'),
                     'type' => 'text',
@@ -527,6 +548,7 @@ function wc_payright_gateway_init()
                     'placeholder' => __('', 'wc-gateway-payright'),
                     'desc_tip' => true,
                 ),
+
                 'minamount' => array(
                     'title' => __('Minimum Amount', 'wc-gateway-payright'),
                     'type' => 'text',
@@ -535,15 +557,16 @@ function wc_payright_gateway_init()
                     'default' => __('5', 'wc-gateway-payright'),
                     'desc_tip' => true,
                 ),
+
                 'displayterm' => array(
                     'title' => __('Display Term', 'wc-gateway-payright'),
                     'type' => 'select',
-                    'options' => array(
-                        'optionOne' => __('Weekly'),
-                        'optionTwo' => __('Fortnightly')
-                    ),
-                    'default' => 'Fortnightly',
+                    'options' => $this->limit_display_term_options_by_region()->terms,
+                    'default' => $this->limit_display_term_options_by_region()->default,
+                    'description' => __('For Australian stores, we currently do NOT offer to display \'Weekly\' Payright term.'),
+                    'desc_tip' => true,
                 ),
+
                 'installments' => array(
                     'title' => __('Show Payright instalments information on Product Page', 'wc-gateway-payright'),
                     'type' => 'select',
@@ -553,6 +576,7 @@ function wc_payright_gateway_init()
                     ),
                     'default' => 'optionOne',
                 ),
+
                 'listinstallments' => array(
                     'title' => __('Show Payright instalments information on Shop Page', 'wc-gateway-payright'),
                     'type' => 'select',
@@ -562,6 +586,7 @@ function wc_payright_gateway_init()
                     ),
                     'default' => 'optionOne',
                 ),
+
                 'frontinstallments' => array(
                     'title' => __('Show Payright instalments information on Front Page', 'wc-gateway-payright'),
                     'type' => 'select',
@@ -571,6 +596,7 @@ function wc_payright_gateway_init()
                     ),
                     'default' => 'optionOne',
                 ),
+
                 'relatedinstallments' => array(
                     'title' => __('Show Payright instalments information on Related Products', 'wc-gateway-payright'),
                     'type' => 'select',
@@ -580,8 +606,9 @@ function wc_payright_gateway_init()
                     ),
                     'default' => 'optionOne',
                 ),
+
                 'moduleOverride' => array(
-                    'title' => __('Module overide CSS', 'wc-gateway-payright'),
+                    'title' => __('Module override CSS', 'wc-gateway-payright'),
                     'type' => 'textarea',
                     'description' => __('Enter your class or id of the element for your sticky header or element that overrides payright pop up'),
                     'default' => __('', 'wc-gateway-payright'),
@@ -589,6 +616,7 @@ function wc_payright_gateway_init()
                         'wc-gateway-payright'),
                     'desc_tip' => true,
                 ),
+
                 'customCss' => array(
                     'title' => __('Custom CSS', 'wc-gateway-payright'),
                     'type' => 'textarea',
@@ -602,15 +630,41 @@ function wc_payright_gateway_init()
         }
 
         /**
+         * Limit display term options, by region. For example, AU only has 'Fortnightly'.
+         *
+         */
+        private function limit_display_term_options_by_region() {
+            // Init object
+            $options = new stdClass();
+
+            // If region = Australia, then limit options with below
+            switch ($this->get_option('region')) {
+                case 'optionOne':
+                    $options->terms = array(
+                        'optionTwo' => __('Fortnightly')
+                    );
+                    $options->default = "optionTwo";
+                    return $options;
+                case 'optionTwo':
+                default:
+                    $options->terms = array(
+                        'optionOne' => __('Weekly'),
+                        'optionTwo' => __('Fortnightly')
+                    );
+                    $options->default = "optionTwo";
+                    return $options;
+            }
+        }
+
+        /**
          * Get the Payright request URL for an order.
          *
          * @param  WC_Order  $order  Order object.
-         * @param  bool  $sandbox  Whether to use sandbox mode or not.
-         * @return string
+         * @return mixed
          */
         public function get_request_url($order)
         {
-            $this->endpoint = constant("PAYRIGHT_ENDPOINT");
+            // $this->endpoint = constant("PAYRIGHT_ENDPOINT");
             $cart_total = WC()->cart->total;
 
             if ($cart_total === 0) {
@@ -620,15 +674,15 @@ function wc_payright_gateway_init()
             }
 
             $payright_api_call = new Payright_Call();
-            $this->payrightPayment = $payright_api_call->payright_initialize_transaction($cart_total, $order->get_id());
+            $payrightPayment = $payright_api_call->payright_initialize_transaction($cart_total, $order->get_id());
 
-            if ($this->payrightPayment == 'error') {
+            if ($payrightPayment == 'error') {
                 return array(
                     'result' => 'failure',
                     'messages' => 'Payright error',
                 );
             } else {
-                return $this->payrightPayment;
+                return $payrightPayment;
             }
         }
 
@@ -648,7 +702,6 @@ function wc_payright_gateway_init()
             return array(
                 'result' => 'success',
                 'redirect' => $this->get_request_url($order),
-
             );
         }
 

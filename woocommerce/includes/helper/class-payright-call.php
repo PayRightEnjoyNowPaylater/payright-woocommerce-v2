@@ -111,9 +111,7 @@ class Payright_Call
 
         try {
             $pr_json_decode      = self::callPayrightApi($url, json_encode($data));
-            $redirectUrl = $pr_json_decode->data->redirectEndpoint;
-
-            return $redirectUrl;
+            return $pr_json_decode->data->redirectEndpoint; // redirectUrl
         } catch (\Exception $e) {
             return "Error";
         }
