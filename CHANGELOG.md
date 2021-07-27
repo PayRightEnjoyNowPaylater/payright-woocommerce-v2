@@ -18,12 +18,14 @@ Please see README.md, for minimum WordPress & WooCommerce platform versions.
 <p>WordPress: 5.7.2</p>
 <p>WooCommerce: 5.4.1</p>
 
-## [2.0.10] - 2021-07-21
+## [2.0.10] - 2021-07-27
 This is a `recommended` release to download and update your plugin version with.
 
 ## Changed
-1. Feature: Changed "Display Term" to only allow WooCommerce AU stores to use this configuration. Payright currently 
-   does not offer 'Weekly' term to AU Payright customers.
+1. Feature: Changed "Display Term" feature, to only allow WooCommerce AU stores to have "Fortnightly" term only. Thus:
+   1. If store is AU region, display term options = \['Fortnightly'\]
+   2. If store is NZ region, display term options = \['Weekly', 'Fortnightly'\]
+2, Refactor: Additional codebase refactoring.
 
 ## [2.0.9] - 2021-07-21
 This is a `optional` release to download and update your plugin version with.
