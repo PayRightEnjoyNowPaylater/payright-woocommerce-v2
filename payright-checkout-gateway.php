@@ -647,7 +647,7 @@ function wc_payright_gateway_init()
             // If region = Australia, then show default
             switch ($this->get_option('region')) {
                 case 'optionOne':
-                    unset($options["optionOne"]); // AU does not support 'weekly'
+                    unset($options->terms["optionOne"]); // AU does not support 'weekly'
                     $options->default = "optionTwo";
                     return $options;
                 case 'optionTwo':
