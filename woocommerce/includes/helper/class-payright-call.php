@@ -312,32 +312,34 @@ class Payright_Call
 
         $repayment_frequency = $theme_options['displayterm'];
 
+        // Define variables
+        $numberOfRepayments = null;
+        $accountKeepingFees = $account_keeping_fees; // default
+
         // Weekly
         if ($repayment_frequency == 'optionOne') {
-            $j = floor($loan_term * (52 / 12));
-            $o = $account_keeping_fees * 12 / 52;
+            $numberOfRepayments = floor($loan_term * (52 / 12));
+            $accountKeepingFees = $account_keeping_fees * 12 / 52;
         }
 
         // Fortnightly
         if ($repayment_frequency == 'optionTwo') {
-            $j = floor($loan_term * (26 / 12));
+            $numberOfRepayments = floor($loan_term * (26 / 12));
             if ($loan_term == 3) {
-                $j = 7;
+                $numberOfRepayments = 7;
             }
-            $o = $account_keeping_fees * 12 / 26;
+            $accountKeepingFees = $account_keeping_fees * 12 / 26;
         }
 
-        if ($repayment_frequency == 'Monthly') {
-            $j = parseInt(k);
-            $o = $account_keeping_fees;
+        // Monthly
+        if ($repayment_frequency == 'optionThree') {
+            $numberOfRepayments = ceil($loan_term);
+            $accountKeepingFees = $account_keeping_fees;
         }
-
-        $number_of_repayments = $j;
-        $account_keeping_fees = $o;
 
         // Prepare array bundle in return statement
-        $return_array['numberOfRepayments'] = $number_of_repayments;
-        $return_array['accountKeepingFees'] = round($account_keeping_fees, 2);
+        $return_array['numberOfRepayments'] = $numberOfRepayments;
+        $return_array['accountKeepingFees'] = round($accountKeepingFees, 2);
         switch($repayment_frequency) {
             case "optionOne":
                 $return_array['repaymentFrequency'] = "Weekly";

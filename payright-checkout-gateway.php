@@ -6,7 +6,7 @@
  * Author: Payright
  * Author URI: https://www.payright.com.au/
  * Text Domain: wc-gateway-payright
- * Version: 2.0.10
+ * Version: 2.0.11
  *
  * Copyright: (c) 2019 Payright
  *
@@ -110,16 +110,16 @@ function payright_shop_installments($price, $product)
 
                     if ((is_shop() || is_product_category()) && $listinstallments == 'optionOne') {
                         // List page
-                        $des = ("<div class='prshop'><p class='payrightshopinstallment'>From $".$result[1]." a fortnight with<img class='payrightLogoImg' src='".$image_url."'/></p></div>");
+                        $des = ("<div class='prshop'><p class='payrightshopinstallment'>From $".$result[1]." a ".$result[3]." with<img class='payrightLogoImg' src='".$image_url."'/></p></div>");
                     } elseif ((is_home() || is_front_page()) && $front_page_instalments == 'optionOne') {
                         // Front page
-                        $des = ("<div class='prshop'><p class='payrightshopinstallment'>From $".$result[1]." a fortnight with<img class='payrightLogoImg' src='".$image_url."'/></p></div>");
+                        $des = ("<div class='prshop'><p class='payrightshopinstallment'>From $".$result[1]." a ".$result[3]." with<img class='payrightLogoImg' src='".$image_url."'/></p></div>");
                     } elseif (is_product() && $woocommerce_loop['name'] != 'related' && $woocommerce_loop['name'] != 'up-sells' && $product_instalments == 'optionOne') {
                         // Product page - product price
-                        $des = ("</br> <div class='payrightProductInstalments payright-simple payright-variable'>From $".$result[1]." a fortnight with<img class='productPayrightLogoImg' src='".$image_url_product."' /><a style='text-decoration: underline;' class='payright_opener654' id='payright_opener654'>Info</a></div>");
+                        $des = ("</br> <div class='payrightProductInstalments payright-simple payright-variable'>From $".$result[1]." a ".$result[3]." with<img class='productPayrightLogoImg' src='".$image_url_product."' /><a style='text-decoration: underline;' class='payright_opener654' id='payright_opener654'>Info</a></div>");
                     } elseif (is_product() && ($woocommerce_loop['name'] == 'related' || $woocommerce_loop['name'] == 'up-sells') && $related_product_instalments == 'optionOne') {
                         // Related products (upsells)
-                        $des = ("<div class='prshop'><p class='payrightshopinstallment'>From $".$result[1]." a fortnight with<img class='payrightLogoImg' src='".$image_url."'/></p></div>");
+                        $des = ("<div class='prshop'><p class='payrightshopinstallment'>From $".$result[1]." a ".$result[3]." with<img class='payrightLogoImg' src='".$image_url."'/></p></div>");
                     }
 
                     break;
@@ -128,10 +128,10 @@ function payright_shop_installments($price, $product)
 
                     if (is_product() && $woocommerce_loop['name'] != 'related' && $woocommerce_loop['name'] != 'up-sells' && $product_instalments == 'optionOne') {
                         // Variation product page - product price
-                        $des = ("</br> <div class='payrightProductInstalments payright-variation'>From $".$result[1]." a fortnight with<img class='productPayrightLogoImg' src='".$image_url."' ><a style='text-decoration: underline;' class='payright_opener654V' id='payright_opener654V'>Info</a></div>");
+                        $des = ("</br> <div class='payrightProductInstalments payright-variation'>From $".$result[1]." a ".$result[3]." with<img class='productPayrightLogoImg' src='".$image_url."' ><a style='text-decoration: underline;' class='payright_opener654V' id='payright_opener654V'>Info</a></div>");
                     } elseif (is_product() && ($woocommerce_loop['name'] == 'related' || $woocommerce_loop['name'] == 'up-sells') && $related_product_instalments == 'optionOne') {
                         // Related products (upsells)
-                        $des = ("<div class='prshop'><p class='payrightshopinstallment'>From $".$result[1]." a fortnight with<img class='payrightLogoImg' src='".$image_url."'/></p></div>");
+                        $des = ("<div class='prshop'><p class='payrightshopinstallment'>From $".$result[1]." a ".$result[3]." with<img class='payrightLogoImg' src='".$image_url."'/></p></div>");
                     }
 
                     break;
@@ -630,27 +630,28 @@ function wc_payright_gateway_init()
         }
 
         /**
-         * Limit display term options, by region. For example, AU only has 'Fortnightly'.
+         * Limit display term options, by region. For example, AU only has 'Fortnightly' & 'Monthly'.
          *
          */
         private function limit_display_term_options_by_region() {
             // Init object
             $options = new stdClass();
 
-            // If region = Australia, then limit options with below
+            // Default display terms list
+            $options->terms = array(
+                'optionOne' => __('Weekly'),
+                'optionTwo' => __('Fortnightly'),
+                'optionThree' => __('Monthly')
+            );
+
+            // If region = Australia, then show default
             switch ($this->get_option('region')) {
                 case 'optionOne':
-                    $options->terms = array(
-                        'optionTwo' => __('Fortnightly')
-                    );
+                    unset($options["optionOne"]); // AU does not support 'weekly'
                     $options->default = "optionTwo";
                     return $options;
                 case 'optionTwo':
                 default:
-                    $options->terms = array(
-                        'optionOne' => __('Weekly'),
-                        'optionTwo' => __('Fortnightly')
-                    );
                     $options->default = "optionTwo";
                     return $options;
             }
