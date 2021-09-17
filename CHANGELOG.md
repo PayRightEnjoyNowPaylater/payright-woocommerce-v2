@@ -18,7 +18,7 @@ Please see README.md, for minimum WordPress & WooCommerce platform versions.
 <p>WordPress: 5.7.2</p>
 <p>WooCommerce: 5.4.1</p>
 
-## [2.0.10] - 2021-09-17
+## [2.0.11] - 2021-09-17
 This is a `recommended` release to download and update your plugin version with.
 
 ## Changed
@@ -30,7 +30,7 @@ This is a `recommended` release to download and update your plugin version with.
 1. Hotfix: Fixed 'display term' copytext. For example, see 'single product item page' now shows 'selected term' in plugin settings.
 
 ## [2.0.10] - 2021-07-27
-This is a `recommended` release to download and update your plugin version with.
+This is a `optional` release to download and update your plugin version with.
 
 ## Changed
 1. Feature: Changed "Display Term" feature, to only allow WooCommerce AU stores to have "Fortnightly" term only. Thus:
