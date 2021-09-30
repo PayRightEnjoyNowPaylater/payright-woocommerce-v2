@@ -18,8 +18,14 @@ Please see README.md, for minimum WordPress & WooCommerce platform versions.
 <p>WordPress: 5.7.2</p>
 <p>WooCommerce: 5.4.1</p>
 
-## [2.0.11] - 2021-09-17
+## [2.1.0] - 2021-09-30
 This is a `recommended` release to download and update your plugin version with.
+
+## Fixed
+1. Hotfix: Fixed 'display term' copy text, only for 'checkout page'. For example, in plugin settings > toggle 'display term' selection > save settings, then proceed to 'checkout page' and select Payright as 'payment method'.
+
+## [2.0.11] - 2021-09-17
+This is a `optional` release to download and update your plugin version with.
 
 ## Changed
 1. Feature: Changed "Display Term" feature, to only allow WooCommerce AU stores to have "Fortnightly" and "Monthly" term only. Thus:
