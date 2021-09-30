@@ -730,14 +730,14 @@ function wc_payright_gateway_init()
             $result = Payright_Call::payright_calculate_single_product_installment($cart_total);
 
 
-            if ($result != null || $result != false) {
+            if ($result != null) {
                 $description = '<div class="bodybox">
                 <div class="payright_container">
                 <article>
                     <div class="payright_columns">
 
                         <div class="insideColumns payright_is-5" id="payright-is-5">
-                            <h2 class="payrightH2 paymentstitle" id="payrightmargin">$' . $result[2] . ' today then ' . $result[0] . ' instalments of $' . $result[1] . '</h2>
+                            <h2 class="payrightH2 paymentstitle" id="payrightmargin">$' . $result[2] . ' today then ' . $result[0] . ' ' . $result[3] .'instalments of $' . $result[1] . '</h2>
                             <p class="payrightPayment" id="payrightdeposit">Excluding deposit</p>
                         </div>
 
