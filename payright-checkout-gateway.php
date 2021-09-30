@@ -102,6 +102,9 @@ function payright_shop_installments($price, $product)
         $result = Payright_Call::payright_calculate_single_product_installment($product_price);
         $result[3] = strtolower(substr($result[3], 0, -2)); // strip 'ly' text, and set to lowercase.
 
+        // Default copy text format and array keys used.
+        $des = ("<div class='prshop'><p class='payrightshopinstallment'>From $".$result[1]." a ".$result[3]." with<img class='payrightLogoImg' src='".$image_url."'/></p></div>");
+
         if ($result != null) {
 
             switch ($type) {
@@ -110,16 +113,16 @@ function payright_shop_installments($price, $product)
 
                     if ((is_shop() || is_product_category()) && $listinstallments == 'optionOne') {
                         // List page
-                        $des = ("<div class='prshop'><p class='payrightshopinstallment'>From $".$result[1]." a ".$result[3]." with<img class='payrightLogoImg' src='".$image_url."'/></p></div>");
+                        // Show default $des
                     } elseif ((is_home() || is_front_page()) && $front_page_instalments == 'optionOne') {
                         // Front page
-                        $des = ("<div class='prshop'><p class='payrightshopinstallment'>From $".$result[1]." a ".$result[3]." with<img class='payrightLogoImg' src='".$image_url."'/></p></div>");
+                        // Show default $des
                     } elseif (is_product() && $woocommerce_loop['name'] != 'related' && $woocommerce_loop['name'] != 'up-sells' && $product_instalments == 'optionOne') {
                         // Product page - product price
                         $des = ("</br> <div class='payrightProductInstalments payright-simple payright-variable'>From $".$result[1]." a ".$result[3]." with<img class='productPayrightLogoImg' src='".$image_url_product."' /><a style='text-decoration: underline;' class='payright_opener654' id='payright_opener654'>Info</a></div>");
                     } elseif (is_product() && ($woocommerce_loop['name'] == 'related' || $woocommerce_loop['name'] == 'up-sells') && $related_product_instalments == 'optionOne') {
                         // Related products (upsells)
-                        $des = ("<div class='prshop'><p class='payrightshopinstallment'>From $".$result[1]." a ".$result[3]." with<img class='payrightLogoImg' src='".$image_url."'/></p></div>");
+                        // Show default $des
                     }
 
                     break;
@@ -131,7 +134,7 @@ function payright_shop_installments($price, $product)
                         $des = ("</br> <div class='payrightProductInstalments payright-variation'>From $".$result[1]." a ".$result[3]." with<img class='productPayrightLogoImg' src='".$image_url."' ><a style='text-decoration: underline;' class='payright_opener654V' id='payright_opener654V'>Info</a></div>");
                     } elseif (is_product() && ($woocommerce_loop['name'] == 'related' || $woocommerce_loop['name'] == 'up-sells') && $related_product_instalments == 'optionOne') {
                         // Related products (upsells)
-                        $des = ("<div class='prshop'><p class='payrightshopinstallment'>From $".$result[1]." a ".$result[3]." with<img class='payrightLogoImg' src='".$image_url."'/></p></div>");
+                        // Show default $des
                     }
 
                     break;
