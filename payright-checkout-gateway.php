@@ -6,7 +6,7 @@
  * Author: Payright
  * Author URI: https://www.payright.com.au/
  * Text Domain: wc-gateway-payright
- * Version: 2.1.0
+ * Version: 2.1.1
  *
  * Copyright: (c) 2019 Payright
  *
@@ -740,7 +740,7 @@ function wc_payright_gateway_init()
                     <div class="payright_columns">
 
                         <div class="insideColumns payright_is-5" id="payright-is-5">
-                            <h2 class="payrightH2 paymentstitle" id="payrightmargin">$' . $result[2] . ' today then ' . $result[0] . ' ' . $result[3] .'instalments of $' . $result[1] . '</h2>
+                            <h2 class="payrightH2 paymentstitle" id="payrightmargin">$' . $result[2] . ' today then ' . $result[0] . ' ' . $result[3] .' instalments of $' . $result[1] . '</h2>
                             <p class="payrightPayment" id="payrightdeposit">Excluding deposit</p>
                         </div>
 
