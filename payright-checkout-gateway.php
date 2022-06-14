@@ -6,7 +6,7 @@
  * Author: Payright
  * Author URI: https://www.payright.com.au/
  * Text Domain: wc-gateway-payright
- * Version: 2.1.2
+ * Version: 2.1.3
  *
  * Copyright: (c) 2019 Payright
  *
@@ -97,15 +97,16 @@ function payright_shop_installments($price, $product)
     $front_page_instalments = $theme_options['frontinstallments'];
     $related_product_instalments = $theme_options['relatedinstallments'];
 
+    $result = Payright_Call::payright_calculate_single_product_installment($product_price);
+
     if ($product_price >= $minamount) {
 
-        $result = Payright_Call::payright_calculate_single_product_installment($product_price);
-        $result[3] = strtolower(substr($result[3], 0, -2)); // strip 'ly' text, and set to lowercase.
+        if ($result) {
 
-        // Default copy text format and array keys used.
-        $des = ("<div class='prshop'><p class='payrightshopinstallment'>From $".$result[1]." a ".$result[3]." with<img class='payrightLogoImg' src='".$image_url."'/></p></div>");
+            $result[3] = strtolower(substr($result[3], 0, -2)); // strip 'ly' text, and set to lowercase.
 
-        if ($result != null) {
+            // Default copy text format and array keys used.
+            $des = ("<div class='prshop'><p class='payrightshopinstallment'>From $".$result[1]." a ".$result[3]." with<img class='payrightLogoImg' src='".$image_url."'/></p></div>");
 
             switch ($type) {
                 case "simple":
@@ -144,6 +145,7 @@ function payright_shop_installments($price, $product)
         }
     }
 
+    // Append together product price and additional Payright html (if any, else append no Payright html)
     return $price.$des;
 }
 
