@@ -22,6 +22,14 @@ Please see README.md, for minimum WordPress & WooCommerce platform versions.
 <p>WordPress: 5.7.2</p>
 <p>WooCommerce: 5.4.1</p>
 
+## [2.1.2] - 2022-06-14
+
+This is a `recommended` release to download and update your plugin version with.
+
+## Fixed
+
+1. Hotfix: Refactored affected deprecated `money_format` function lines, fallback to `sprintf` function usage. This is to accommodate for PHP v8.x environments.
+
 ## [2.1.1] - 2022-03-09
 
 This is a `optional` release to download and update your plugin version with.
