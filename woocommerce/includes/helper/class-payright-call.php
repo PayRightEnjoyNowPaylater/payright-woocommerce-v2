@@ -290,7 +290,7 @@ class Payright_Call
                 return [
                     'minimumDepositPercentage' => $minimumDepositPercentage,
                     // If above PHP 7.4 check, source: https://www.php.net/manual/en/function.money-format.php
-                    'minimumDepositAmount' => function_exists('money_format') ? money_format('%.2n', $depositAmount) : sprintf('%01.2f', $depositAmount),
+                    'minimumDepositAmount' => sprintf('%01.2f', $depositAmount),
                     'minimumDepositTerm' => $rate->term,
                 ];
             }
